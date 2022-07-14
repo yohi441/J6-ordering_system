@@ -1,0 +1,46 @@
+<!-- Product List -->
+
+<section class="bg-white bg-opacity-40">
+    <div class="w-full px-5 py-6 mx-auto space-y-5 sm:py-8 md:py-12 sm:space-y-8 md:space-y-16 max-w-7xl">
+
+        <div class="flex flex-col items-center sm:px-5 md:flex-row">
+            {% for best in bests %}
+            <div class="w-full md:w-1/2">
+                <a href="#_" class="block">
+                    <img class="object-cover w-full h-full rounded-lg max-h-64 sm:max-h-96" src="{{ best.food_image.url }}">
+                </a>
+            </div>
+            <div class="flex flex-col items-start justify-center w-full h-full py-6 mb-6 md:mb-0 md:w-1/2">
+                <div class="flex flex-col items-start justify-center h-full space-y-3 transform md:pl-10 lg:pl-16 md:space-y-5">
+                    <div class="bg-pink-500  items-center pl-2 pr-3 py-1.5 leading-none rounded-full text-xs font-medium uppercase text-white inline-block">
+                        
+                        <span>{{best.status}}</span>
+                    </div>
+                    <h1 class="text-4xl font-bold leading-none lg:text-5xl xl:text-6xl"><a href="#_">{{best.name}}</a></h1>
+                    <p class="pt-2 text-gray-500">P {{best.price}}</p>
+                    <p class="pt-2 text-sm font-medium"><a href="{% url 'add_to_cart' best.pk %}" hx-boost="true" class="mr-1 underline"><button class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500">Add to Cart</button></a></p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="grid grid-cols-12 pb-10 sm:px-5 gap-x-8 gap-y-16">
+            {% for food in foods %}
+            <div class="flex flex-col items-start col-span-12 space-y-3 sm:col-span-6 xl:col-span-4">
+                <a href="#_" class="block">
+                    <img class="object-cover w-full mb-2 overflow-hidden rounded-lg shadow-sm max-h-56" src="{{ food.food_image.url }}">
+                </a>
+                <div class="bg-purple-500  items-center px-3 py-1.5 leading-none rounded-full text-xs font-medium uppercase text-white inline-block">
+                    <span>{{food.status|title}}</span>
+                </div>
+                <h2 class="text-lg font-bold sm:text-xl md:text-2xl"><a href="#_">{{food.name|title}}</a></h2>
+                <p class="text-gray-500">P {{food.price}}</p>
+                <p class="pt-2 text-xs font-medium"><a href="{% url 'add_to_cart' food.pk %}" hx-boost="true" class="mr-1 underline"><button class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500">Add to Cart</button></a></p>
+            </div>
+            {% endfor %}
+
+          
+
+        </div>
+    </div>
+</section>

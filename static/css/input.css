@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.bg-image {
+    background-image: url("../assets/img/bg-merge.png");
+}
+
+
+.bg-image1 {
+    background-image: url("../assets/img/smartphone.jpg");
+}
+
+
+.bg-image2 {
+    background-image: url("../assets/img/street.jpg");
+}

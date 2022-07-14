@@ -1,0 +1,18 @@
+{% extends 'base.html'%}
+
+{% block content %}
+{% include 'components/header.html' %}
+<div class="min-h-screen">
+    <h3>Cart</h3>
+    <div>
+        {% for food in foods %}
+            <div>
+                {{food.name}}
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% include 'components/footer.html' %}
+{% endblock %}
+
+
