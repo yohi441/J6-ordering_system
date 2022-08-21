@@ -117,7 +117,16 @@ class CartView(View):
         return render(request, 'cart.html', context)
 
 
+class DeleteItemInCartView(View):
 
+    def post(self, request, pk):
+        for i in self.request.session['cart']:
+            if pk == i:
+                self.request.session['cart'].remove(pk)
+
+                request.session.modified = True 
+
+        return redirect(reverse('cart'))
 
 class DetailView(DetailView):
     template_name = "detail_full_view.html"

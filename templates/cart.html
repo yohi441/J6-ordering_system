@@ -39,9 +39,12 @@
           </td>
           <td class="p-4 px-6 text-center whitespace-nowrap">Php {{ food.price }}</td>
           <td class="p-4 px-6 text-center whitespace-nowrap">
-            <button class="px-2 py-0 text-red-100 bg-red-600 rounded">
+            <form action="{% url 'delete-cart-item' food.pk %}" hx-confirm="Are you sure you want to remove this item?" hx-boost="true" hx-indicatory="#my-indicator" method="POST">
+              {% csrf_token %}
+            <button type="submit" class="px-2 py-0 text-red-100 bg-red-600 rounded">
               x
             </button>
+          </form>
           </td>
         </tr>
         {% endfor %}
