@@ -10,5 +10,6 @@ urlpatterns = [
     path('contact/', views.ContactView.as_view(), name="contact"),
     path('add/to/cart/<int:pk>/', views.AddtocartView.as_view(), name="add_to_cart"),
     path('add/to/cart/', views.CartView.as_view(), name="cart"),
+    path('detail/<int:pk>/', views.DetailView.as_view(), name="detail-view"),
 
 ]

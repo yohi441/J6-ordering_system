@@ -1,7 +1,7 @@
 
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import View
+from django.views.generic import View, DetailView
 from ordering.models import Food
 from django.db.models import Q
 
@@ -97,3 +97,9 @@ class CartView(View):
             'foods': foods
         }
         return render(request, 'cart.html', context)
+
+
+class DetailView(DetailView):
+    template_name = "detail_full_view.html"
+    model = Food
+    context_object_name = "food"
