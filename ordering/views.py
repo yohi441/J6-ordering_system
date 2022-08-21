@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.views.generic import View, DetailView
 from ordering.models import Food
 from django.db.models import Q
+from collections import Counter
 
 
 
@@ -85,6 +86,19 @@ class AddtocartView(View):
 
 class CartView(View):
 
+    def total(self, list_items):
+        if isinstance(list_items, list):
+            total = 0
+            for item in list_items:
+                food = Food.objects.get(pk=item)
+                total += food.price
+
+            return total
+        
+        else:
+            return "not a list" 
+
+
     def get(self, request):
         if 'cart' in self.request.session: 
             cart = self.request.session['cart']
@@ -92,11 +106,17 @@ class CartView(View):
             cart = []
 
         foods = Food.objects.filter(pk__in=self.request.session['cart'])
+        c = Counter(cart)
+        total = self.total(cart)
         context = {
             'cart': len(cart),
-            'foods': foods
+            'foods': foods,
+            'counter': dict(c),
+            'total': total
         }
         return render(request, 'cart.html', context)
+
+
 
 
 class DetailView(DetailView):
