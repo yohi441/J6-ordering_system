@@ -128,6 +128,23 @@ class DeleteItemInCartView(View):
 
         return redirect(reverse('cart'))
 
+class UpdateQntyInCartView(View):
+
+    def post(self, request, pk):
+        qnty = request.POST.get('qty')
+        action = request.POST.get('action')
+
+        if action == "+":
+            if int(qnty) < 10:
+                self.request.session['cart'].append(pk)
+                request.session.modified = True
+        elif action == "-":
+            if int(qnty) > 1:
+                self.request.session['cart'].remove(pk)
+                request.session.modified = True
+
+        return redirect(reverse('cart'))
+
 class DetailView(DetailView):
     template_name = "detail_full_view.html"
     model = Food

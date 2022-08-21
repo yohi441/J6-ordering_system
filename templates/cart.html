@@ -23,7 +23,9 @@
           <td class="p-4 px-6 text-center whitespace-nowrap">{{ food.name }}</td>
           <td class="p-4 px-6 text-center whitespace-nowrap">
             <div>
-              <button class="px-2 py-0 shadow">-</button>
+              <form hx-boost="true" hx-indicator="#my-indicator" action="{% url 'update-qty-item' food.pk %}" method="POST">
+                {% csrf_token %}
+              <input value="-" name="action" type="submit" class="cursor-pointer px-2 py-0 shadow">
               {% for key, value in counter.items %}
               {% if key == food.pk %}
               <input
@@ -34,7 +36,8 @@
               />
               {% endif %}
               {% endfor %}
-              <button class="px-2 py-0 shadow">+</button>
+              <input value="+" name="action" type="submit" class="cursor-pointer px-2 py-0 shadow">
+            </form>
             </div>
           </td>
           <td class="p-4 px-6 text-center whitespace-nowrap">Php {{ food.price }}</td>
