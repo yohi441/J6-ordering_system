@@ -79,10 +79,11 @@ class AddtocartView(View):
             self.request.session['cart'] = [pk]
 
         self.request.session.modified = True
-
+        cart = self.request.session['cart']
+        
         messages.success(request, 'Added successfully')
 
-        return redirect(reverse('index'))
+        return render(request, 'htmx_partials/add_to_cart_partial.html', {'cart': len(cart)})
 
 
 class CartView(View):
