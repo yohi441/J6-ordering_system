@@ -5,6 +5,7 @@ from django.views.generic import View, DetailView
 from ordering.models import Food
 from django.db.models import Q
 from collections import Counter
+from django.contrib import messages
 
 
 
@@ -79,7 +80,7 @@ class AddtocartView(View):
 
         self.request.session.modified = True
 
-        print(request.session['cart'])
+        messages.success(request, 'Added successfully')
 
         return redirect(reverse('index'))
 
