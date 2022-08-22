@@ -1,3 +1,4 @@
+from distutils.command.upload import upload
 from django.db import models
 
 
@@ -31,3 +32,17 @@ class Checkout(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
 
+class Testimonial(models.Model):
+    full_name = models.CharField(max_length=100)
+    message = models.TextField()
+    avatar = models.ImageField(upload_to='testimonial/avatar/', null=True, blank=True)
+    post_origin = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.full_name
+
+    @property
+    def get_image(self):
+        if not self.avatar:
+            return '/static/assets/img/default.png'
+        return self.avatar.url

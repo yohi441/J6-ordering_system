@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View, DetailView
-from ordering.models import Food
+from ordering.models import Food, Testimonial
 from django.db.models import Q
 from collections import Counter
 from django.contrib import messages
@@ -12,6 +12,7 @@ from django.contrib import messages
 class IndexView(View):
 
     def get(self, request):
+        testimonials = Testimonial.objects.all()[:3]
         bests = Food.objects.filter(status="Best Seller")[:1]
         foods = Food.objects.exclude(Q(status="Best Seller")|Q(status="Out Of Stock"))
         if 'cart' in self.request.session: 
@@ -20,6 +21,7 @@ class IndexView(View):
             cart = []
         
         context = {
+            'testimonials': testimonials,
             'foods': foods,
             'bests': bests,
             'cart': len(cart)
@@ -80,7 +82,7 @@ class AddtocartView(View):
 
         self.request.session.modified = True
         cart = self.request.session['cart']
-        
+
         messages.success(request, 'Added successfully')
 
         return render(request, 'htmx_partials/add_to_cart_partial.html', {'cart': len(cart)})
@@ -117,6 +119,7 @@ class CartView(View):
             'total': total
         }
         return render(request, 'cart.html', context)
+
 
 
 class DeleteItemInCartView(View):
