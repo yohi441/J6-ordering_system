@@ -109,7 +109,7 @@ class CartView(View):
         else:
             cart = []
 
-        foods = Food.objects.filter(pk__in=self.request.session['cart'])
+        foods = Food.objects.filter(pk__in=cart)
         c = Counter(cart)
         total = self.total(cart)
         context = {
