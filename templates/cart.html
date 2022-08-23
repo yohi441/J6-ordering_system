@@ -50,6 +50,10 @@
           </form>
           </td>
         </tr>
+        {% empty %}
+        <div class="text-base text-j6primary mb-2">
+          You cart is empty
+        </div>
         {% endfor %}
         <tr>
           <td class="p-4 px-6 text-center whitespace-nowrap"></td>
@@ -57,7 +61,7 @@
             <div class="font-bold">Total Qty - {{cart}}</div>
           </td>
           <td class="p-4 px-6 font-extrabold text-center whitespace-nowrap">
-            Total: Php {{ total }}
+            Sub-Total: Php {{ total }}
           </td>
           <td class="p-4 px-6 text-center whitespace-nowrap">
             
