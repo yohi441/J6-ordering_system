@@ -125,11 +125,12 @@ class CartView(View):
 class DeleteItemInCartView(View):
 
     def post(self, request, pk):
-        for i in self.request.session['cart']:
-            if pk == i:
+        count = len(self.request.session['cart'])
+        for i in range(count):
+            if pk in self.request.session['cart']:
                 self.request.session['cart'].remove(pk)
 
-                request.session.modified = True 
+        self.request.session.modified = True
 
         return redirect(reverse('cart'))
 
