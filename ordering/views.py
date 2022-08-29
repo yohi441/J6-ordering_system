@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View, DetailView
-from ordering.models import Food, Testimonial
+from ordering.models import Food, Testimonial, Catering, FoodList
 from django.db.models import Q
 from collections import Counter
 from django.contrib import messages
@@ -49,8 +49,11 @@ class ServiceView(View):
             cart = self.request.session['cart']
         else:
             cart = []
+
+        catering = Catering.objects.all()
         context = {
-            'cart': len(cart)
+            'cart': len(cart),
+            'catering': catering
         }
 
         return render(request, 'service.html', context)

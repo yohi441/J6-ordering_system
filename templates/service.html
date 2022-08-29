@@ -4,10 +4,33 @@
 {% block content %}
 {% include 'components/header.html' %}
 <section class="container mx-auto min-h-screen">
-    <div class="flex flex-col items-center justify-center mx-auto space-y-10">
+    <div class="flex flex-col items-center justify-center mx-auto space-y-10 mb-10">
        <h3 class="text-4xl text-gray-700 sm:text-5xl md:text-4xl lg:text-5xl">Catering Services</h3>
        
-
+       <h3 class="text-3xl text-gray-700 sm:text-4xl md:text-3xl lg:text-4xl">Party Package</h3>
+        <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+            
+            
+            {% for cater in catering  %}
+            <div class="border shadow-md rounded border-gray-700 p-3">
+                <ul class="text-gray-700 text-base list-disc">
+                    <h4 class="text-xl bold">{{ cater.package_set}}</h4>
+                    <h3 class="mb-2"><span>Price:</span> P{{cater.price}}</h3>
+                    {% for i in cater.catering.all  %}
+                    <li class="ml-4">{{i.food_name}}</li>
+                    {% endfor %}
+                    
+                </ul>
+            </div>    
+            {% endfor %}
+            
+            
+        </div>
+        <div class="text-gray-700 text-2xl">
+            <p>For more Information contact:</p>
+            <p>Cellphone: 01283182689</p>
+        </div>
+        
 
     </div>
 </section>

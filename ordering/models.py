@@ -1,4 +1,4 @@
-from distutils.command.upload import upload
+from platform import release
 from django.db import models
 
 
@@ -14,7 +14,6 @@ class Food(models.Model):
 
     name = models.CharField(max_length=255)
     price = models.PositiveIntegerField()
-    description = models.TextField()
     status = models.CharField(max_length=50, choices=STATUS, default='Favorites')
     food_image = models.ImageField(upload_to ='food_img/', null=True, blank=True)
 
@@ -46,3 +45,19 @@ class Testimonial(models.Model):
         if not self.avatar:
             return '/static/assets/img/default.png'
         return self.avatar.url
+
+class Catering(models.Model):
+    package_set = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.package_set
+
+class FoodList(models.Model):
+    food_name = models.CharField(max_length=255)
+    catering = models.ForeignKey(Catering, related_name="catering", on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.food_name
+
+
