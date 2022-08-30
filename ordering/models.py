@@ -27,8 +27,21 @@ class Food(models.Model):
 
 
 class Checkout(models.Model):
-    food = models.ManyToManyField(Food, related_name="foods")
+    PAYMENT = [
+        ('Cash on delivery', 'Cash on delivery'),
+        ('Gcash', 'Gcash')
+    ]
+    food = models.ManyToManyField(Food)
     timestamp = models.DateTimeField(auto_now_add=True)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    address = models.CharField(max_length=1000, default="")
+    cellphone = models.IntegerField(default=0)
+    email = models.EmailField(blank=True, null=True)
+    full_name = models.CharField(max_length=255, default="")
+    payment_method = models.CharField(choices=PAYMENT, default='Gcash', max_length=200)
+
+    def __str__(self):
+        return self.full_name
 
 
 class Testimonial(models.Model):

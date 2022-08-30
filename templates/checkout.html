@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% include 'components/header.html' %}
+
+    <div class="border border-black container mx-auto py-10 mb-10">
+        <div class="container mx-auto max-w-md bg-white shadow-lg rounded-lg md:max-w-xl">
+            <div class="md:flex ">
+                <div class="w-full p-4 px-5 py-5">
+                    <div class="flex gap-2 flex-row">
+                        <h2 class="text-3xl font-semibold">J6</h2>
+                        <h2 class="text-3xl text-green-400 font-semibold">Balbacua</h2>
+                    </div>
+                    <form action="{% url 'checkout' %}" method="POST">
+                        {% csrf_token %}
+                        {% for field in form  %}
+                     
+                        {% if field.errors %}
+                        {{field.errors}}
+                        {% endif %}         
+                        <div>{{field.label}}: {{field}}</div>
+                        
+                    
+                        {% endfor %}
+                        <button type="submit">submit</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% include 'components/footer.html' %}
+{% endblock content %}
+
+

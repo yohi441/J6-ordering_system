@@ -72,7 +72,7 @@
     </table>
     <div class="flex justify-end mt-4 space-x-2">
       
-      <button
+      <a
         class="
           px-6
           py-3
@@ -81,9 +81,12 @@
           hover:bg-green-500
           rounded-md
         "
+        href="{% url 'checkout' %}"
+        hx-boost="true"
+        hx-indicator="#my-indicator"
       >
         Proceed to Checkout
-      </button>
+      </a>
     </div>
   </div>
 </div>

@@ -2,11 +2,11 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View, DetailView
-from ordering.models import Food, Testimonial, Catering, FoodList
-from django.db.models import Q
+from ordering.models import Food, Testimonial, Catering, Checkout
 from collections import Counter
 from django.contrib import messages
-
+from ordering.forms import CheckoutForm
+from django.db.models import Q
 
 
 class IndexView(View):
@@ -158,3 +158,45 @@ class DetailView(DetailView):
     template_name = "detail_full_view.html"
     model = Food
     context_object_name = "food"
+
+class CheckOut(View):
+    def get(self, request):
+        
+        if 'cart' in self.request.session: 
+            cart = self.request.session['cart']
+        else:
+            cart = []
+
+        form = CheckoutForm(initial={'cellphone':''})
+        context = {
+            'cart': len(cart),
+            'form': form
+        }
+        
+        return render(request, 'checkout.html', context)
+
+    def post(self, request):
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
+
+        foods = Food.objects.filter(pk__in=cart)
+        total = CartView().total(cart)
+
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            print("valid")
+            instance = form.save(commit=False)
+            instance.total_price = total
+            instance.save()
+            for food in foods:
+                instance.food.add(food)
+            instance.save()
+        context = {
+            'cart': len(cart),
+            'form': form
+        }
+        
+        return render(request, 'checkout.html', context)
+    
