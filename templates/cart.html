@@ -3,7 +3,7 @@
 
 {% block content %}
 {% include 'components/header.html' %}
-<div class="container p-8 mx-auto mt-12 bg-white">
+<div class="container p-8 mx-auto mt-12 bg-white min-h-screen">
   <div class="w-full overflow-x-auto">
     <div class="my-2">
       <h3 class="text-xl font-bold tracking-wider">Cart</h3>
@@ -70,24 +70,25 @@
         
       </tbody>
     </table>
-    <div class="flex justify-end mt-4 space-x-2">
+    
+  </div>
+  <div class="flex justify-end mt-4 space-x-2">
       
-      <a
-        class="
-          px-6
-          py-3
-          text-sm text-white
-          bg-j6primary
-          hover:bg-green-500
-          rounded-md
-        "
-        href="{% url 'checkout' %}"
-        hx-boost="true"
-        hx-indicator="#my-indicator"
-      >
-        Proceed to Checkout
-      </a>
-    </div>
+    <a
+      class="
+        px-6
+        py-3
+        text-sm text-white
+        bg-j6primary
+        hover:bg-green-500
+        rounded-md
+      "
+      href="{% url 'checkout' %}"
+      hx-boost="true"
+      hx-indicator="#my-indicator"
+    >
+      Proceed to Checkout
+    </a>
   </div>
 </div>
 

@@ -4,11 +4,11 @@
 {% block content %}
 {% include 'components/header.html' %}
 
-    <div class="border border-black container mx-auto py-10 mb-10">
+    <div class="container mx-auto py-10 mb-10">
         <div class="container mx-auto max-w-md bg-white shadow-lg rounded-lg md:max-w-xl">
             <div class="md:flex ">
                 <div class="w-full p-4 px-5 py-5">
-                    <div class="flex gap-2 flex-row">
+                    <div class="flex gap-2 flex-row mb-10">
                         <h2 class="text-3xl font-semibold">J6</h2>
                         <h2 class="text-3xl text-green-400 font-semibold">Balbacua</h2>
                     </div>
@@ -18,12 +18,26 @@
                      
                         {% if field.errors %}
                         {{field.errors}}
-                        {% endif %}         
-                        <div>{{field.label}}: {{field}}</div>
+                        {% endif %} 
+                        <div class="mb-2">{{field.label}}</div>        
+                        <div class="mb-2">{{field}}</div>
                         
                     
                         {% endfor %}
-                        <button type="submit">submit</button>
+                        <ul class="list-disc mb-2">
+                            <h3>Orders</h3>
+                        {% for food in food_list %}
+                        <li class="ml-5">{{food}}</li>
+                        {% endfor %}
+                        </ul>
+                        <div class="">Total</div>
+                        <div class="mb-4">{{sub_total}}</div>
+                        <button
+                        type="submit"
+                        class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
+                        >
+                        Submit
+                        </button>
                     </form>
                     
                 </div>

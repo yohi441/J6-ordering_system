@@ -93,7 +93,7 @@ class AddtocartView(View):
 
 class CartView(View):
 
-    def total(self, list_items):
+    def get_total(self, list_items):
         if isinstance(list_items, list):
             total = 0
             for item in list_items:
@@ -114,7 +114,7 @@ class CartView(View):
 
         foods = Food.objects.filter(pk__in=cart)
         c = Counter(cart)
-        total = self.total(cart)
+        total = self.get_total(cart)
         context = {
             'cart': len(cart),
             'foods': foods,
@@ -171,10 +171,15 @@ class CheckOut(View):
             messages.error(request, "Error.. Your cart is empty")
             return redirect('cart')
 
+        total = CartView().get_total(cart)
+
         form = CheckoutForm(initial={'cellphone':''})
+        food_list = Food.objects.filter(pk__in=cart)
         context = {
             'cart': len(cart),
-            'form': form
+            'form': form,
+            'sub_total': total,
+            'food_list': food_list
         }
         
         return render(request, 'checkout.html', context)
@@ -186,7 +191,7 @@ class CheckOut(View):
             cart = []
 
         foods = Food.objects.filter(pk__in=cart)
-        total = CartView().total(cart)
+        total = CartView().get_total(cart)
 
         form = CheckoutForm(request.POST)
         if form.is_valid():
