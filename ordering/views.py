@@ -5,34 +5,80 @@ from django.views.generic import View, DetailView
 from ordering.models import Food, Testimonial, Catering, Checkout
 from collections import Counter
 from django.contrib import messages
-from ordering.forms import CheckoutForm
+from ordering.forms import CheckoutForm, ContactForm
 from django.db.models import Q
+from django.core.mail import send_mail
+
+
+def my_send_mail(request):
+    form = ContactForm(request.POST)
+    if form.is_valid():
+        name = form.cleaned_data['name']
+        email = form.cleaned_data['email']
+        message = form.cleaned_data['message']
+
+        send_mail(
+            f"Message from {name}.",
+            f"{message}",
+            f"{email}",
+            ['example@email.com'],
+            fail_silently=True,
+        )
+        form = ContactForm()
+        messages.success(request, "Success.. Email Sent")
+        return form
+    
+    messages.error(request, "Error.. Something Wrong")
+    return form
 
 
 class IndexView(View):
 
     def get(self, request):
+        form = ContactForm()
         testimonials = Testimonial.objects.all()[:3]
         bests = Food.objects.filter(status="Best Seller")[:1]
-        foods = Food.objects.exclude(Q(status="Best Seller")|Q(status="Out Of Stock"))
-        if 'cart' in self.request.session: 
+        foods = Food.objects.exclude(
+            Q(status="Best Seller") | Q(status="Out Of Stock"))
+        if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
             cart = []
-        
+
         context = {
             'testimonials': testimonials,
             'foods': foods,
             'bests': bests,
-            'cart': len(cart)
+            'cart': len(cart),
+            'form': form
         }
 
         return render(request, 'index.html', context)
+    
+    def post(self, request):
+        form = my_send_mail(request)
+        testimonials = Testimonial.objects.all()[:3]
+        bests = Food.objects.filter(status="Best Seller")[:1]
+        foods = Food.objects.exclude(
+            Q(status="Best Seller") | Q(status="Out Of Stock"))
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
+        context = {
+            'testimonials': testimonials,
+            'foods': foods,
+            'bests': bests,
+            'cart': len(cart),
+            'form': form
+        }
+        return render(request, 'index.html', context)
+
 
 class AboutView(View):
 
     def get(self, request):
-        if 'cart' in self.request.session: 
+        if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
             cart = []
@@ -45,7 +91,7 @@ class AboutView(View):
 class ServiceView(View):
 
     def get(self, request):
-        if 'cart' in self.request.session: 
+        if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
             cart = []
@@ -62,20 +108,29 @@ class ServiceView(View):
 class ContactView(View):
 
     def get(self, request):
-        if 'cart' in self.request.session: 
+        form = ContactForm()
+        if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
             cart = []
         context = {
-            'cart': len(cart)
+            'cart': len(cart),
+            'form': form
         }
 
         return render(request, 'contact.html', context)
 
+    def post(self, request):
+        form = my_send_mail(request)
+        context = {
+            'form': form
+        }
+        return render(request, 'contact.html', context)
+
+
 class AddtocartView(View):
 
     def get(self, request, pk):
-        
 
         if 'cart' in self.request.session:
             self.request.session['cart'].append(pk)
@@ -101,13 +156,12 @@ class CartView(View):
                 total += food.price
 
             return total
-        
-        else:
-            return "not a list" 
 
+        else:
+            return "not a list"
 
     def get(self, request):
-        if 'cart' in self.request.session: 
+        if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
             cart = []
@@ -124,7 +178,6 @@ class CartView(View):
         return render(request, 'cart.html', context)
 
 
-
 class DeleteItemInCartView(View):
 
     def post(self, request, pk):
@@ -137,6 +190,7 @@ class DeleteItemInCartView(View):
 
         return redirect(reverse('cart'))
 
+
 class UpdateQntyInCartView(View):
 
     def post(self, request, pk):
@@ -148,7 +202,7 @@ class UpdateQntyInCartView(View):
                 self.request.session['cart'].append(pk)
                 request.session.modified = True
             else:
-                messages.error(request, "Error.. Max quantity is 10")    
+                messages.error(request, "Error.. Max quantity is 10")
         elif action == "-":
             if int(qnty) > 1:
                 self.request.session['cart'].remove(pk)
@@ -157,26 +211,28 @@ class UpdateQntyInCartView(View):
                 messages.error(request, "Error.. Minimum quantity is 1")
         return redirect(reverse('cart'))
 
+
 class DetailView(DetailView):
     template_name = "detail_full_view.html"
     model = Food
     context_object_name = "food"
 
+
 class CheckOut(View):
     def get(self, request):
-        
-        if 'cart' in self.request.session: 
+
+        if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
             cart = []
-        
+
         if cart == []:
             messages.error(request, "Error.. Your cart is empty")
             return redirect('cart')
 
         total = CartView().get_total(cart)
 
-        form = CheckoutForm(initial={'cellphone':''})
+        form = CheckoutForm(initial={'cellphone': ''})
         food_list = Food.objects.filter(pk__in=cart)
         context = {
             'cart': len(cart),
@@ -184,7 +240,7 @@ class CheckOut(View):
             'sub_total': total,
             'food_list': food_list
         }
-        
+
         return render(request, 'checkout.html', context)
 
     def post(self, request):
@@ -209,6 +265,5 @@ class CheckOut(View):
             'cart': len(cart),
             'form': form
         }
-        
+
         return render(request, 'checkout.html', context)
-    
