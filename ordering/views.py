@@ -147,11 +147,14 @@ class UpdateQntyInCartView(View):
             if int(qnty) < 10:
                 self.request.session['cart'].append(pk)
                 request.session.modified = True
+            else:
+                messages.error(request, "Error.. Max quantity is 10")    
         elif action == "-":
             if int(qnty) > 1:
                 self.request.session['cart'].remove(pk)
                 request.session.modified = True
-
+            else:
+                messages.error(request, "Error.. Minimum quantity is 1")
         return redirect(reverse('cart'))
 
 class DetailView(DetailView):
