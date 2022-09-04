@@ -19,8 +19,9 @@
                     
                     <span>{{food.status}}</span>
                 </div>
-                <h1 class="text-4xl font-bold leading-none lg:text-5xl xl:text-6xl"><a href="#_">{{food.name}}</a></h1>
-                <p class="pt-2 text-gray-500">P {{food.price}}</p>
+                <h1 class="text-4xl font-bold leading-none lg:text-5xl xl:text-6xl">{{food.name}}</h1>
+                <p class="pt-2 font-bold text-2xl text-gray-500">P {{food.price}}</p>
+                <p class="pt-2 text-xl text-gray-500">Desciption: {{food.description}}</p>
                 <p class="pt-2 text-sm font-medium"><a href="{% url 'add_to_cart' food.pk %}" hx-boost="true" class="mr-1 underline"><button class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500">Add to Cart</button></a></p>
             </div>
         </div>

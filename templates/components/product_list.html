@@ -17,7 +17,7 @@
                         <span>{{best.status}}</span>
                     </div>
                     <h1 class="text-4xl font-bold leading-none lg:text-5xl xl:text-6xl"><a href="#_">{{best.name}}</a></h1>
-                    <p class="pt-2 text-gray-500">P {{best.price}}</p>
+                    <p class="pt-2 text-xl font-bold text-gray-500">P {{best.price}}</p>
                     <p class="pt-2 text-sm font-medium">
                         <button
                         hx-get="{% url 'add_to_cart' best.pk %}"
@@ -43,7 +43,7 @@
                     <span>{{food.status|title}}</span>
                 </div>
                 <h2 class="text-lg font-bold sm:text-xl md:text-2xl"><a href="#_">{{food.name|title}}</a></h2>
-                <p class="text-gray-500">P {{food.price}}</p>
+                <p class="text-xl font-bold text-gray-500">P {{food.price}}</p>
                 <p class="pt-2 text-xs font-medium">
                     <p class="pt-2 text-sm font-medium">
                         <button

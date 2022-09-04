@@ -16,7 +16,7 @@ class Food(models.Model):
     price = models.PositiveIntegerField()
     status = models.CharField(max_length=50, choices=STATUS, default='Favorites')
     food_image = models.ImageField(upload_to ='food_img/', null=True, blank=True)
-
+    description = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -26,11 +26,14 @@ class Food(models.Model):
 
 
 
+
+
 class Checkout(models.Model):
     PAYMENT = [
         ('Cash on delivery', 'Cash on delivery'),
         ('Gcash', 'Gcash')
     ]
+    
     food = models.ManyToManyField(Food)
     timestamp = models.DateTimeField(auto_now_add=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
