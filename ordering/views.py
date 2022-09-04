@@ -86,7 +86,7 @@ class AddtocartView(View):
         self.request.session.modified = True
         cart = self.request.session['cart']
 
-        messages.success(request, 'Added successfully')
+        messages.success(request, 'Success.. Added successfully')
 
         return render(request, 'htmx_partials/add_to_cart_partial.html', {'cart': len(cart)})
 
@@ -166,6 +166,10 @@ class CheckOut(View):
             cart = self.request.session['cart']
         else:
             cart = []
+        
+        if cart == []:
+            messages.error(request, "Error.. Your cart is empty")
+            return redirect('cart')
 
         form = CheckoutForm(initial={'cellphone':''})
         context = {

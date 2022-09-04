@@ -17,8 +17,8 @@
     {% if messages %}
     {% for message in messages %}
     <div x-data="{open:true}" x-show="open" x-init="setTimeout(()=>{open=false}, 2000)" x-cloak class="container mx-auto px-5 fixed top-5 z-50">
-        <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lgs" role="alert">
-            <span class="font-medium">Success</span> {{message}}
+        <div class="{% if message.tags %}{{message.tags}}{% endif %}" role="alert">
+             {{message}}
         </div>
     </div>
     {% endfor %}
