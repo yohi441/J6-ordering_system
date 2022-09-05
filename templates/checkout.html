@@ -8,10 +8,11 @@
         <div class="container mx-auto max-w-md bg-white shadow-lg rounded-lg md:max-w-xl">
             <div class="md:flex ">
                 <div class="w-full p-4 px-5 py-5">
-                    <div class="flex gap-2 flex-row mb-10">
+                    <div class="flex gap-2 flex-row mb-4">
                         <h2 class="text-3xl font-semibold">J6</h2>
                         <h2 class="text-3xl text-green-400 font-semibold">Balbacua</h2>
                     </div>
+                    <div class="mb-10 text-3xl font-semibold">Checkout Form</div>
                     <form action="{% url 'checkout' %}" method="POST">
                         {% csrf_token %}
                         {% for field in form  %}
@@ -24,17 +25,10 @@
                         
                     
                         {% endfor %}
-                        <ul class="list-disc mb-2">
-                            <h3>Orders</h3>
-                        {% for food in food_list %}
-                        <li class="ml-5">{{food}}</li>
-                        {% endfor %}
-                        </ul>
-                        <div class="">Total</div>
-                        <div class="mb-4">{{sub_total}}</div>
+                        
                         <button
                         type="submit"
-                        class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
+                        class="px-4 mt-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
                         >
                         Submit
                         </button>

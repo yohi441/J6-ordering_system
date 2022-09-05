@@ -230,15 +230,12 @@ class CheckOut(View):
             messages.error(request, "Error.. Your cart is empty")
             return redirect('cart')
 
-        total = CartView().get_total(cart)
 
         form = CheckoutForm(initial={'cellphone': ''})
-        food_list = Food.objects.filter(pk__in=cart)
+        
         context = {
             'cart': len(cart),
             'form': form,
-            'sub_total': total,
-            'food_list': food_list
         }
 
         return render(request, 'checkout.html', context)
