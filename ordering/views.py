@@ -5,9 +5,11 @@ from django.views.generic import View, DetailView
 from ordering.models import Food, Testimonial, Catering, Checkout
 from collections import Counter
 from django.contrib import messages
-from ordering.forms import CheckoutForm, ContactForm
+from ordering.forms import CheckoutForm, ContactForm, RegisterForm
 from django.db.models import Q
 from django.core.mail import send_mail
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import logout, login
 
 
 def my_send_mail(request):
@@ -267,15 +269,59 @@ class CheckOut(View):
 
 class SigninView(View):
 
-    def get(self, request):
+    def post(self, request):
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('/')
+        context = {
+            'form': form,
+        }
+        return render(request, 'signin.html', context)
 
-        return render(request, 'signin.html', {})
+
+    
+    def get(self, request):
+        form = AuthenticationForm(request)
+        if request.user.is_authenticated:
+            return redirect('/')
+        context = {
+            'form': form,
+        }
+
+        return render(request, 'signin.html', context)
 
 
 
 class SignupView(View):
 
-    def get(self, request):
+    def post(self, request):
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/')
+        
+        context = {
+            'form': form,
+        }
+        return render(request, 'signup.html', context)
 
-        return render(request, 'signup.html', {})
+    def get(self, request):
+        form = RegisterForm()
+        if request.user.is_authenticated:
+            return redirect('/')
+
+        context = {
+            'form': form,
+        }
+        return render(request, 'signup.html', context)
+
+
+class LogoutView(View):
+
+    def get(self, request):
+        logout(request)
+
+        return redirect('/')
 

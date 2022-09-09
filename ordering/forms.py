@@ -1,5 +1,10 @@
 from django import forms
 from ordering.models import Checkout
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 class CheckoutForm(forms.ModelForm):
     address = forms.CharField(widget=forms.Textarea)
@@ -33,5 +38,25 @@ class ContactForm(forms.Form):
         'class':'block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40',
         'type':'email'
         }))
+
+
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    username = forms.CharField(required=True, min_length=4, max_length=10)
+
+    class Meta:
+        model = User
+        fields = ["username", "email", "password1", "password2"]
+
+    def save(self, commit=True):
+        user = super(RegisterForm, self).save(commit=False)
+        user.email = self.cleaned_data['email']
+
+        if commit:
+            user.save()
+            
+        return user
+
     
         
