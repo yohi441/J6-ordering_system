@@ -1,4 +1,17 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255)
+    middle_initial = models.CharField(max_length=255)
+    address = models.TextField(max_length=2225)
+    cellphone_number = models.IntegerField()
+    email_address = models.EmailField(blank=True, null=True)
 
 
 class Barangay(models.Model):
