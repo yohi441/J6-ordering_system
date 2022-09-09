@@ -251,7 +251,6 @@ class CheckOut(View):
 
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            print("valid")
             instance = form.save(commit=False)
             instance.total_price = total
             instance.save()
@@ -264,3 +263,19 @@ class CheckOut(View):
         }
 
         return render(request, 'checkout.html', context)
+
+
+class SigninView(View):
+
+    def get(self, request):
+
+        return render(request, 'signin.html', {})
+
+
+
+class SignupView(View):
+
+    def get(self, request):
+
+        return render(request, 'signup.html', {})
+

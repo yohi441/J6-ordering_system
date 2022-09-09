@@ -45,8 +45,8 @@
         </a>
         {% else %}
         <div class="z-20 flex gap-2">
-            <a href="#" class="px-4 py-2 border-j6primary border transition-colors duration-200 text-gray-600 hover:text-gray-100 transform rounded-md bg-white hover:bg-j6primary focus:outline-none focus:bg-green-500">Login</a>
-            <a href="#" class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-gray-100 hover:text-gray-600 border hover:border-j6primary focus:outline-none focus:bg-green-500">Register</a>
+            <a href="{% url 'sign-in' %}" class="px-4 py-2 border-j6primary border transition-colors duration-200 text-gray-600 hover:text-gray-100 transform rounded-md bg-white hover:bg-j6primary focus:outline-none focus:bg-green-500">Login</a>
+            <a href="{% url 'sign-up'  %}" class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-gray-100 hover:text-gray-600 border hover:border-j6primary focus:outline-none focus:bg-green-500">Register</a>
         </div>
         {% endif %}
 
