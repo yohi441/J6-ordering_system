@@ -13,26 +13,7 @@
                         <h2 class="text-3xl text-green-400 font-semibold">Balbacua</h2>
                     </div>
                     <div class="mb-10 text-3xl font-semibold">Checkout Form</div>
-                    <form action="{% url 'checkout' %}" method="POST">
-                        {% csrf_token %}
-                        {% for field in form  %}
-                     
-                        {% if field.errors %}
-                        {{field.errors}}
-                        {% endif %} 
-                        <div class="mb-2">{{field.label}}</div>        
-                        <div class="mb-2">{{field}}</div>
-                        
                     
-                        {% endfor %}
-                        
-                        <button
-                        type="submit"
-                        class="px-4 mt-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
-                        >
-                        Submit
-                        </button>
-                    </form>
                     
                 </div>
             </div>

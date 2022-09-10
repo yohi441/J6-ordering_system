@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View, DetailView
-from ordering.models import Food, Testimonial, Catering, Checkout
+from ordering.models import Food, Testimonial, Catering
 from collections import Counter
 from django.contrib import messages
-from ordering.forms import CheckoutForm, ContactForm, RegisterForm, LoginForm
+from ordering.forms import ContactForm, RegisterForm, LoginForm
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.contrib.auth import logout, login
@@ -230,39 +230,18 @@ class CheckOut(View):
             messages.error(request, "Error.. Your cart is empty")
             return redirect('cart')
 
+        if not request.user.is_authenticated:
+            messages.error(request, "You not logged in please log in")
+            return redirect('cart')
 
-        form = CheckoutForm(initial={'cellphone': ''})
-        
+
         context = {
             'cart': len(cart),
-            'form': form,
         }
 
         return render(request, 'checkout.html', context)
 
-    def post(self, request):
-        if 'cart' in self.request.session:
-            cart = self.request.session['cart']
-        else:
-            cart = []
-
-        foods = Food.objects.filter(pk__in=cart)
-        total = CartView().get_total(cart)
-
-        form = CheckoutForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.total_price = total
-            instance.save()
-            for food in foods:
-                instance.food.add(food)
-            instance.save()
-        context = {
-            'cart': len(cart),
-            'form': form
-        }
-
-        return render(request, 'checkout.html', context)
+   
 
 
 class SigninView(View):
@@ -282,10 +261,15 @@ class SigninView(View):
     
     def get(self, request):
         form = LoginForm(request)
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
         if request.user.is_authenticated:
             return redirect('/')
         context = {
             'form': form,
+            'cart': len(cart)
         }
 
         return render(request, 'signin.html', context)
@@ -308,11 +292,16 @@ class SignupView(View):
 
     def get(self, request):
         form = RegisterForm()
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
         if request.user.is_authenticated:
             return redirect('/')
 
         context = {
             'form': form,
+            'cart':len(cart)
         }
         return render(request, 'signup.html', context)
 
