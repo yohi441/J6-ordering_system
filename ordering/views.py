@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.core.mail import send_mail
 from django.contrib.auth import logout, login
 from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
@@ -238,7 +239,7 @@ class CheckOut(View):
             return redirect('cart')
 
         if not request.user.is_authenticated:
-            messages.error(request, "You not logged in please log in")
+            messages.error(request, "You're not logged in please log in")
             return redirect('cart')
         
         user = User.objects.get(pk=request.user.pk)
@@ -266,12 +267,17 @@ class SigninView(View):
 
     def post(self, request):
         form = LoginForm(request, data=request.POST)
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
         if form.is_valid():
             user = form.get_user()
             login(request, user)
             return redirect('/')
         context = {
             'form': form,
+            'cart': len(cart)
         }
         return render(request, 'signin.html', context)
 
@@ -298,6 +304,10 @@ class SignupView(View):
 
     def post(self, request):
         form = RegisterForm(request.POST)
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
         if form.is_valid():
             form.save()
             messages.success(request, "Success! Registered successfully")
@@ -305,6 +315,7 @@ class SignupView(View):
         
         context = {
             'form': form,
+            'cart':len(cart)
         }
         return render(request, 'signup.html', context)
 
@@ -330,4 +341,12 @@ class LogoutView(View):
         logout(request)
 
         return redirect('/')
+
+class ProfileView(LoginRequiredMixin ,View):
+    login_url = '/login/'
+
+    def get(self, request):
+
+
+        return render(request, 'profile.html', {})
 
