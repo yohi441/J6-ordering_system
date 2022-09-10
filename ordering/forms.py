@@ -49,6 +49,24 @@ class RegisterForm(UserCreationForm):
         model = User
         fields = ["username", "email", "password1", "password2"]
 
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
+        for field in self.fields:
+            if str(field) == 'password1' or str(field) == 'password2':
+                self.fields[str(field)].widget.attrs.update({
+                    'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
+                    'placeholder': 'Password',
+                })
+                print(self.fields[field],"true")
+            else:
+                self.fields[str(field)].widget.attrs.update({
+                    'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
+                    'placeholder': str(field).replace('_', ' ').capitalize(),
+                })
+
+
     def save(self, commit=True):
         user = super(RegisterForm, self).save(commit=False)
         user.email = self.cleaned_data['email']

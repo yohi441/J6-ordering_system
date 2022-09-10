@@ -29,20 +29,22 @@
                     <p class="text-lg text-gray-500">You have an account you can <a href="{% url 'sign-in' %}" class="text-j6primary underline">sign in</a></p>
                     <form action="{% url 'sign-up' %}" method="POST">
                         {% csrf_token %}
-                        <div class="relative w-full mt-10 space-y-8">
-                            {{form}}
-                            {% comment %} <div class="relative">
-                                <label class="font-medium text-gray-900">Name</label>
-                                <input type="text" class="block w-full px-4 py-4 mt-2 text-xl placeholder-gray-400 bg-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50" placeholder="Enter Your Name">
-                            </div>
-                            <div class="relative">
-                                <label class="font-medium text-gray-900">Email</label>
-                                <input type="text" class="block w-full px-4 py-4 mt-2 text-xl placeholder-gray-400 bg-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50" placeholder="Enter Your Email Address">
-                            </div>
-                            <div class="relative">
-                                <label class="font-medium text-gray-900">Password</label>
-                                <input type="password" class="block w-full px-4 py-4 mt-2 text-xl placeholder-gray-400 bg-gray-200 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-600 focus:ring-opacity-50" placeholder="Password">
-                            </div> {% endcomment %}
+                        <div class="relative w-full mt-10">
+                            {% if form.errors %}
+                            <div class="text-red-500">{{form.non_field_errors}}</div>
+                            {% endif %}
+                            {% for field in form %}
+                            
+                        
+                      
+                            <label for="{{field.label}}">{{field.label}}</label>
+                   
+                            
+                            {% if field.errors %}
+                            <div class="text-red-500">{{field.errors}}</div>
+                            {% endif %}
+                            {{field}}
+                            {% endfor %}
                             <div class="relative">
                                 <button type="submit" class="inline-block w-full px-5 py-4 text-lg font-medium text-center text-white transition duration-200 bg-j6primary rounded-lg hover:bg-green-700 ease">Create Account</button>
                             </div>
