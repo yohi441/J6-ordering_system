@@ -298,6 +298,7 @@ class SignupView(View):
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Success! Registered successfully")
             return redirect('/')
         
         context = {
