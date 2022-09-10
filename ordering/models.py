@@ -46,33 +46,6 @@ class Food(models.Model):
         return self.name
 
 
-class Checkout(models.Model):
-    PAYMENT = [
-        ('Cash on delivery', 'Cash on delivery'),
-        ('Gcash', 'Gcash')
-    ]
-
-    food = models.ManyToManyField(Food)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    sub_total_price = models.DecimalField(
-        max_digits=10, decimal_places=2, default=0.00)
-    address = models.CharField(max_length=1000, default="")
-    cellphone = models.IntegerField(default=0)
-    email = models.EmailField(blank=True, null=True)
-    full_name = models.CharField(max_length=255, default="")
-    payment_method = models.CharField(
-        choices=PAYMENT, default='Gcash', max_length=200)
-    barangay = models.ForeignKey(Barangay, related_name="barangay", on_delete=models.SET_NULL, blank=True, null=True)
-    
-
-    @property
-    def total(self):
-        return self.sub_total_price + self.barangay.shipping_fee
-
-
-    def __str__(self):
-        return self.full_name
-
 
 class Testimonial(models.Model):
     full_name = models.CharField(max_length=100)
@@ -107,9 +80,3 @@ class FoodList(models.Model):
     def __str__(self) -> str:
         return self.food_name
 
-
-
-class Order(models.Model):
-    checkout = models.ForeignKey(Checkout, related_name="checkout", on_delete=models.SET_NULL, blank=True, null=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_method = models.CharField(max_length=255)

@@ -13,9 +13,52 @@
                         <h2 class="text-3xl text-green-400 font-semibold">Balbacua</h2>
                     </div>
                     <div class="mb-10 text-3xl font-semibold">Checkout</div>
-                    <div class="border border-j6primary border-dashed">
-                        <h3>Customer's Info</h3>
+                    <div class="border border-j6primary border-dashed p-2">
+                        <h3>Customer's Information</h3>
+                        <div>First Name: {{profile.first_name}}</div>
+                        <div>Last Name: {{profile.last_name}}</div>
+                        <div>Address: {{profile.address}}</div>
+                        <div>Contact: {{profile.cellphone_number}}</div>
+                        <div>Email: {{profile.email_address}}</div>
                         
+                        
+                    </div>
+                    <div class="mt-10 border border-gray-600 p-2">
+                        <ul class="list-disc">
+                            <h3>List of Orders</h3>
+                       
+                            {% for cart in cart_items  %}
+                            <li class="ml-5">
+                                <div class="flex gap-2">
+                                    <div>{{cart}} x</div>
+                                {% for key, value in counter.items %}
+                                    {% if key == cart.pk %}
+                                    <div>{{value}}</div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                       <div>
+                        <label for="cars">Payment method:</label>
+
+                        <select name="payment" id="">
+                        <option value="GCASH">Gcash</option>
+                        <option value="COD">Cash on Delivery</option>
+                        </select>
+                       </div>
+                       <div>Shipping Fee: {{shipping}}</div>
+                       <div>Total: {{final_total}}</div>
+
+                    </div>
+
+                    <div class="mt-5">
+                        <button
+                        class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
+                        >
+                        Order Submit
+                        </button>
                     </div>
                     
                 </div>

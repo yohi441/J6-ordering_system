@@ -7,10 +7,11 @@ from django.contrib import messages
 from ordering.forms import ContactForm, RegisterForm, LoginForm
 from django.db.models import Q
 from django.core.mail import send_mail
-from django.contrib.auth import logout, login, get_user_model
+from django.contrib.auth import logout, login
+from django.contrib.auth.models import User
 
 
-User = get_user_model()
+
 
 
 def my_send_mail(request):
@@ -225,13 +226,12 @@ class CheckOut(View):
 
 
     def get(self, request):
-
+        
         if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
             cart = []
-        user = User.objects.get(pk=request.user.pk)
-        profile = Profile.objects.get(user=user)
+        
 
         if cart == []:
             messages.error(request, "Error.. Your cart is empty")
@@ -240,12 +240,21 @@ class CheckOut(View):
         if not request.user.is_authenticated:
             messages.error(request, "You not logged in please log in")
             return redirect('cart')
-
         
-
-
+        user = User.objects.get(pk=request.user.pk)
+        profile = Profile.objects.get(user=user)
+        cart_items = Food.objects.filter(pk__in=cart)
+        c = Counter(cart)
+        total = CartView().get_total(cart)
+        shipping = 50
+        final_total = total + shipping
         context = {
             'cart': len(cart),
+            'profile': profile,
+            'cart_items': cart_items,
+            'counter': dict(c),
+            'shipping': shipping,
+            'final_total': final_total
         }
 
         return render(request, 'checkout.html', context)
