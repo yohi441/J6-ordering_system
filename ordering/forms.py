@@ -1,6 +1,6 @@
 from django import forms
 from ordering.models import Checkout
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
 
 
@@ -58,5 +58,14 @@ class RegisterForm(UserCreationForm):
             
         return user
 
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
+        'placeholder': 'Username'
+    }))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
+        'placeholder': 'Password'
+    }))
     
         

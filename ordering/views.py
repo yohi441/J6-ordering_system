@@ -1,14 +1,12 @@
-
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View, DetailView
 from ordering.models import Food, Testimonial, Catering, Checkout
 from collections import Counter
 from django.contrib import messages
-from ordering.forms import CheckoutForm, ContactForm, RegisterForm
+from ordering.forms import CheckoutForm, ContactForm, RegisterForm, LoginForm
 from django.db.models import Q
 from django.core.mail import send_mail
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import logout, login
 
 
@@ -270,7 +268,7 @@ class CheckOut(View):
 class SigninView(View):
 
     def post(self, request):
-        form = AuthenticationForm(request, data=request.POST)
+        form = LoginForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
@@ -283,7 +281,7 @@ class SigninView(View):
 
     
     def get(self, request):
-        form = AuthenticationForm(request)
+        form = LoginForm(request)
         if request.user.is_authenticated:
             return redirect('/')
         context = {
