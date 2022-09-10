@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View, DetailView
-from ordering.models import Food, Testimonial, Catering
+from ordering.models import Food, Testimonial, Catering, Profile
 from collections import Counter
 from django.contrib import messages
 from ordering.forms import ContactForm, RegisterForm, LoginForm
 from django.db.models import Q
 from django.core.mail import send_mail
-from django.contrib.auth import logout, login
+from django.contrib.auth import logout, login, get_user_model
+
+
+User = get_user_model()
 
 
 def my_send_mail(request):
@@ -219,12 +222,16 @@ class DetailView(DetailView):
 
 
 class CheckOut(View):
+
+
     def get(self, request):
 
         if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
             cart = []
+        user = User.objects.get(pk=request.user.pk)
+        profile = Profile.objects.get(user=user)
 
         if cart == []:
             messages.error(request, "Error.. Your cart is empty")
@@ -233,6 +240,8 @@ class CheckOut(View):
         if not request.user.is_authenticated:
             messages.error(request, "You not logged in please log in")
             return redirect('cart')
+
+        
 
 
         context = {

@@ -6,12 +6,16 @@ User = get_user_model()
 
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    middle_initial = models.CharField(max_length=255)
-    address = models.TextField(max_length=2225)
-    cellphone_number = models.IntegerField()
+    first_name = models.CharField(max_length=255, blank=True, null=True)
+    last_name = models.CharField(max_length=255, blank=True, null=True)
+    middle_initial = models.CharField(max_length=255, blank=True, null=True)
+    address = models.TextField(max_length=2225, blank=True, null=True)
+    cellphone_number = models.IntegerField(blank=True, null=True)
     email_address = models.EmailField(blank=True, null=True)
+
+
+    def __str__(self):
+        return self.user.username
 
 
 class Barangay(models.Model):
