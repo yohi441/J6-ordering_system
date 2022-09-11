@@ -346,7 +346,14 @@ class ProfileView(LoginRequiredMixin ,View):
     login_url = '/login/'
 
     def get(self, request):
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
 
+        context = {
+            'cart': len(cart)
+        }
 
-        return render(request, 'profile.html', {})
+        return render(request, 'profile.html', context)
 
