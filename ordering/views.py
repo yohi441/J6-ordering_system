@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View, DetailView
@@ -10,6 +11,7 @@ from django.core.mail import send_mail
 from django.contrib.auth import logout, login
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
+from ordering.forms import ProfileForm
 
 
 
@@ -346,14 +348,59 @@ class ProfileView(LoginRequiredMixin ,View):
     login_url = '/login/'
 
     def get(self, request):
+        user = User.objects.get(pk=request.user.pk)
+        profile = Profile.objects.get(user=user)
         if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
             cart = []
 
         context = {
-            'cart': len(cart)
+            'cart': len(cart),
+            'profile': profile
         }
 
         return render(request, 'profile.html', context)
 
+class ProfileEditView(LoginRequiredMixin, View):
+
+    def get(self, request):
+        user = User.objects.get(pk=request.user.pk)
+        instance = Profile.objects.get(user=user)
+        form = ProfileForm(instance=instance)
+
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
+
+        context = {
+            'form': form,
+            'cart': len(cart)
+        }
+
+        return render(request, 'profile_edit.html', context)
+
+    def post(self,request):
+        user = User.objects.get(pk=request.user.pk)
+        instance = Profile.objects.get(user=user)
+        form = ProfileForm(request.POST or None, instance=instance)
+
+        if form.is_valid():
+            form.save()
+            
+            messages.success(request, "Success! Profile Updated")
+            return redirect(reverse('profile'))
+
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
+
+        context = {
+            'form': form,
+            'cart': len(cart)
+        } 
+        
+        messages.error(request, "Error! Please try again")
+        return render(request, 'profile_edit.html', context)

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
+from ordering.models import Profile
 
 
 User = get_user_model()
@@ -65,5 +66,48 @@ class LoginForm(AuthenticationForm):
         'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
         'placeholder': 'Password'
     }))
+
+
+class ProfileForm(forms.ModelForm):
+    first_name = forms.CharField(required=True, widget=forms.TextInput(attrs={
+        'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
+        'placeholder': 'First name'
+    }))
+    middle_initial = forms.CharField(max_length=1, required=True, widget=forms.TextInput(attrs={
+        'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
+        'placeholder': 'Middle Initial'
+    }))
+    last_name = forms.CharField(required=True, widget=forms.TextInput(attrs={
+        'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
+        'placeholder': 'Last name'
+    }))
+    address = forms.CharField(required=True, widget=forms.Textarea(attrs={
+        'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
+        'placeholder': 'Address',
+        'rows': 4
+    }))
+    cellphone_number = forms.CharField(max_length=14, required=True, widget=forms.NumberInput(attrs={
+        'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
+        'placeholder': 'Cellphone number'
+    }))
+    email_address = forms.CharField(required=True, widget=forms.TextInput(attrs={
+        'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
+        'placeholder': 'Email Address'
+    }))
+    
+    class Meta:
+        model = Profile
+        fields = [
+            'first_name',
+            'middle_initial',
+            'last_name',
+            'address',
+            'cellphone_number',
+            'email_address'
+            ]
+
+            
+                
+           
     
         
