@@ -80,3 +80,29 @@ class FoodList(models.Model):
     def __str__(self) -> str:
         return self.food_name
 
+
+class Order(models.Model):
+    payment = [
+        ('Gcash', 'Gcash'),
+        ('COD', 'COD')
+    ]
+    user = models.ForeignKey(User, related_name="user_order", on_delete=models.CASCADE)
+    shipping_fee = models.PositiveIntegerField()
+    total = models.PositiveIntegerField()
+    payment_method = models.CharField(max_length=10, choices=payment)
+    paid_status = models.CharField(max_length=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        return f"{self.user} - {self.created_at}"
+
+
+class OrderItems(models.Model):
+    order = models.ForeignKey(Order, related_name="order", on_delete=models.CASCADE)
+    food = models.ForeignKey(Food, related_name="food", on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.food}"

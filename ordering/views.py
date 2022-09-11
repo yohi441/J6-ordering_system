@@ -2,7 +2,7 @@ from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View, DetailView
-from ordering.models import Food, Testimonial, Catering, Profile
+from ordering.models import Food, Testimonial, Catering, Profile, Order, OrderItems
 from collections import Counter
 from django.contrib import messages
 from ordering.forms import ContactForm, RegisterForm, LoginForm
@@ -404,3 +404,54 @@ class ProfileEditView(LoginRequiredMixin, View):
         
         messages.error(request, "Error! Please try again")
         return render(request, 'profile_edit.html', context)
+
+class OrderView(LoginRequiredMixin, View):
+
+    def post(self, request):
+        user = User.objects.get(pk=request.user.pk)
+        profile = Profile.objects.get(user=user)
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
+
+        if profile.first_name == None or profile.last_name == None or profile.address == None or profile.cellphone_number == None:
+            messages.error(request, 'Error! Please provide your information')
+            return redirect(reverse('checkout'))
+
+        sub_total = CartView().get_total(cart)
+        c = Counter(cart)
+        dict_counter = dict(c)
+        payment_method = request.POST['payment']
+        shipping_fee = request.POST['shipping']
+        total = int(sub_total) + int(shipping_fee)
+        print(shipping_fee)
+        if payment_method == 'GCASH':
+            paid_status = 'Paid'
+        elif payment_method == 'COD':
+            paid_status = 'Unpaid'
+
+        order = Order.objects.create(
+            user=user,
+            total=total,
+            shipping_fee=int(shipping_fee),
+            payment_method=payment_method,
+            paid_status=paid_status,
+        )
+        order.save()
+
+        for key in dict_counter:
+            food = Food.objects.get(pk=key)
+            order_items = OrderItems.objects.create(
+                order = order,
+                food = food,
+                quantity = int(dict_counter[key])
+            )
+        
+        order_items.save()
+
+        context = {
+
+        }
+            
+        return render(request, 'order_detail.html', context)
