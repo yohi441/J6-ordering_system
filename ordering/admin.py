@@ -1,11 +1,26 @@
 from django.contrib import admin
 
-from ordering.models import Food, Testimonial, FoodList, Catering, Profile
+
+from ordering.models import Food, Testimonial, FoodList, Catering, Profile, Order, OrderItems
+
+
+admin.site.site_header = 'J6 Balbacuahan Admin Site'
+admin.site.site_title = 'J6 Balbacuahan'
+admin.site.index_title = 'J6 Balbacuahan'
 
 
 admin.site.register(Food)
 admin.site.register(Testimonial)
 admin.site.register(Profile)
+
+
+class OrderItemsInline(admin.StackedInline):
+    model = OrderItems
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    inlines = [OrderItemsInline]
 
 class FoodListInline(admin.StackedInline):
     model = FoodList
@@ -14,3 +29,5 @@ class FoodListInline(admin.StackedInline):
 @admin.register(Catering)
 class CateringAdmin(admin.ModelAdmin):
     inlines = [FoodListInline]
+
+

@@ -104,5 +104,8 @@ class OrderItems(models.Model):
     food = models.ForeignKey(Food, related_name="food", on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
 
+    class Meta:
+        verbose_name_plural = "categories"
+
     def __str__(self):
         return f"{self.food}"

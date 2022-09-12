@@ -12,8 +12,40 @@ from django.contrib.auth import logout, login
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from ordering.forms import ProfileForm
+import requests
+from requests.auth import HTTPBasicAuth
 
 
+
+def paymongo_gcash(amount):
+    final_amount = str(amount) + '00'
+    url = "https://api.paymongo.com/v1/sources"
+
+    payload = {"data": {"attributes": {
+                "amount": int(final_amount),
+                "redirect": {
+                    "success": "http://127.0.0.1:8000",
+                    "failed": "http://127.0.0.1:8001"
+                },
+                "billing": {
+                    "name": "test",
+                    "phone": "09631230987",
+                    "email": "example@email.com"
+                },
+                "type": "gcash",
+                "currency": "PHP"
+            }}}
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        
+    }
+
+    response = requests.post(url, json=payload, headers=headers, auth=HTTPBasicAuth('pk_test_VCsn3f8Rv4kvBNeVRjQZezK4', 'sk_test_eX67HqRLhcsmeh6TtUBAbaoM'))
+
+    data = response.json()
+
+    return data['data']['attributes']['redirect']['checkout_url']
 
 
 
@@ -425,17 +457,19 @@ class OrderView(LoginRequiredMixin, View):
         payment_method = request.POST['payment']
         shipping_fee = request.POST['shipping']
         total = int(sub_total) + int(shipping_fee)
-        print(shipping_fee)
+        
         if payment_method == 'GCASH':
             paid_status = 'Paid'
+            payment = 'Gcash'
         elif payment_method == 'COD':
             paid_status = 'Unpaid'
+            payment = 'COD'
 
         order = Order.objects.create(
             user=user,
             total=total,
             shipping_fee=int(shipping_fee),
-            payment_method=payment_method,
+            payment_method=payment,
             paid_status=paid_status,
         )
         order.save()

@@ -13,11 +13,16 @@
                         <h2 class="text-3xl text-green-400 font-semibold">Balbacua</h2>
                     </div>
                     <div class="mb-10 text-3xl font-semibold">Checkout</div>
+                    <div class="mb-5">
+                        <p>Please check your information before issue and order.</p>
+                        <p>Please enter your current cellphone number and address.</p>
+                        <p>J6 balbacuahan will all your number after you issue and order</p>
+                    </div>
                     <div class="border border-j6primary border-dashed p-2">
                         <h3>Customer's Information</h3>
-                        <div>First Name: {{profile.first_name}}</div>
-                        <div>Last Name: {{profile.last_name}}</div>
-                        <div>Address: {{profile.address}}</div>
+                        <div>First Name: {{profile.first_name|title}}</div>
+                        <div>Last Name: {{profile.last_name|title}}</div>
+                        <div>Address: {{profile.address|title}}</div>
                         <div>Contact: {{profile.cellphone_number}}</div>
                         <div>Email: {{profile.email_address}}</div>
                         
