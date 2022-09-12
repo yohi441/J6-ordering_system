@@ -14,9 +14,9 @@
                     </div>
                     <div class="mb-10 text-3xl font-semibold">Checkout</div>
                     <div class="mb-5">
-                        <p>Please check your information before issue and order.</p>
+                        <p>Please check your information before issue an order.</p>
                         <p>Please enter your current cellphone number and address.</p>
-                        <p>J6 balbacuahan will all your number after you issue and order</p>
+                        <p>J6 balbacuahan will contact your number after you issue an order</p>
                     </div>
                     <div class="border border-j6primary border-dashed p-2">
                         <h3>Customer's Information</h3>
@@ -48,16 +48,29 @@
                                 {% endfor %}
                             </ul>
                             <div>
-                                <label for="cars">Payment method:</label>
+                                <label for="payment">Payment method:</label>
                                 
                                     
-                                <select name="payment" id="">
+                                <select class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40" name="payment" id="">
                                 <option value="GCASH">Gcash</option>
                                 <option value="COD">Cash on Delivery</option>
                                 </select>
+
                                 <input class="hidden" name="shipping" value="{{shipping}}" type="text">
+
                             </div>
-                            <div>Shipping Fee: {{shipping}}</div>
+                            <div>
+                                <label for="barangay">Select Barangay</label>
+                                <select class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40" name="barangay">
+                                    {% for barangay in barangays %}
+                                        
+                                        <option value="{{barangay}}">{{ barangay }}</option>
+                                        
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>Shipping Fee: 0</div>
+                            <input type="text" class="hidden">
                             <div>Total: {{final_total}}</div>
 
                         </div>

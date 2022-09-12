@@ -2,7 +2,7 @@ from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View, DetailView
-from ordering.models import Food, Testimonial, Catering, Profile, Order, OrderItems, About
+from ordering.models import Food, Testimonial, Catering, Profile, Order, OrderItems, About, Barangay
 from collections import Counter
 from django.contrib import messages
 from ordering.forms import ContactForm, RegisterForm, LoginForm
@@ -263,7 +263,7 @@ class CheckOut(View):
 
 
     def get(self, request):
-        
+        brgy = Barangay.objects.all()
         if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
@@ -291,7 +291,8 @@ class CheckOut(View):
             'cart_items': cart_items,
             'counter': dict(c),
             'shipping': shipping,
-            'final_total': final_total
+            'final_total': final_total,
+            'barangays': brgy
         }
 
         return render(request, 'checkout.html', context)

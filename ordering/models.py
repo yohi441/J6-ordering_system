@@ -24,7 +24,10 @@ class Profile(models.Model):
 
 class Barangay(models.Model):
     name = models.CharField(max_length=255)
-    shipping_fee = models.DecimalField(max_digits=10, decimal_places=2)
+    shipping_fee = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.name}"
 
 
 class Food(models.Model):
