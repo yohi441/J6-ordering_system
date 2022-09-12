@@ -4,6 +4,10 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class About(models.Model):
+    about = models.TextField()
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=255, blank=True, null=True)

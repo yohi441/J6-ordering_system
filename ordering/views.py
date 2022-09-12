@@ -2,7 +2,7 @@ from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View, DetailView
-from ordering.models import Food, Testimonial, Catering, Profile, Order, OrderItems
+from ordering.models import Food, Testimonial, Catering, Profile, Order, OrderItems, About
 from collections import Counter
 from django.contrib import messages
 from ordering.forms import ContactForm, RegisterForm, LoginForm
@@ -117,12 +117,14 @@ class IndexView(View):
 class AboutView(View):
 
     def get(self, request):
+        about = About.objects.first()
         if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
             cart = []
         context = {
-            'cart': len(cart)
+            'cart': len(cart),
+            'about': about.about
         }
         return render(request, 'about.html', context)
 
