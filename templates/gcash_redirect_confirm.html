@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% include 'components/header.html' %}
+
+    <div class="container flex flex-col items-center min-h-screen mx-auto py-10 mb-10">
+        <div class="flex flex-col items-center">
+            <h1 class="font-semibold text-5xl text-gray-700">Gcash Redirect</h1>
+            <p class="font-semibold mt-5 text-gray-700">Your about to pay your order using gcash click confirm to redirect to gcash page</p>
+
+        </div>
+        <div class="mt-5">
+            <a href="{{checkout_url}}">
+                <button 
+                    class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
+                    >
+                    Confirm
+                </button>
+            </a>
+            <a href="{% url 'checkout' %}">
+                <button 
+                    class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
+                    >
+                    Cancel
+                </button>
+            </a>
+        </div>
+        
+    </div>
+
+{% include 'components/footer.html' %}
+{% endblock content %}
+
+

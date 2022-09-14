@@ -1,8 +1,7 @@
-from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import View, DetailView
-from ordering.models import Food, Testimonial, Catering, Profile, Order, OrderItems, About, Barangay
+from django.views.generic import View, DetailView, ListView
+from ordering.models import Food, Testimonial, Catering, Profile, Order, OrderItems, About
 from collections import Counter
 from django.contrib import messages
 from ordering.forms import ContactForm, RegisterForm, LoginForm
@@ -15,7 +14,17 @@ from ordering.forms import ProfileForm
 import requests
 from requests.auth import HTTPBasicAuth
 
-
+def gcash_redirect(request, amount):
+    if 'cart' in request.session:
+        cart = request.session['cart']
+    else:
+        cart = []
+    checkout_url = paymongo_gcash(amount)
+    context = {
+        'cart': len(cart),
+        'checkout_url': checkout_url
+    }
+    return render(request, 'gcash_redirect_confirm.html', context)
 
 def paymongo_gcash(amount):
     final_amount = str(amount) + '00'
@@ -263,7 +272,7 @@ class CheckOut(View):
 
 
     def get(self, request):
-        brgy = Barangay.objects.all()
+        
         if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
@@ -283,16 +292,13 @@ class CheckOut(View):
         cart_items = Food.objects.filter(pk__in=cart)
         c = Counter(cart)
         total = CartView().get_total(cart)
-        shipping = 50
-        final_total = total + shipping
+        final_total = total + profile.barangay.shipping_fee
         context = {
             'cart': len(cart),
             'profile': profile,
             'cart_items': cart_items,
             'counter': dict(c),
-            'shipping': shipping,
             'final_total': final_total,
-            'barangays': brgy
         }
 
         return render(request, 'checkout.html', context)
@@ -458,12 +464,13 @@ class OrderView(LoginRequiredMixin, View):
         c = Counter(cart)
         dict_counter = dict(c)
         payment_method = request.POST['payment']
-        shipping_fee = request.POST['shipping']
+        shipping_fee = profile.barangay.shipping_fee
         total = int(sub_total) + int(shipping_fee)
         
         if payment_method == 'GCASH':
             paid_status = 'Paid'
             payment = 'Gcash'
+            return redirect(reverse('gcash-redirect', kwargs={'amount': total}))
         elif payment_method == 'COD':
             paid_status = 'Unpaid'
             payment = 'COD'
@@ -488,7 +495,17 @@ class OrderView(LoginRequiredMixin, View):
         order_items.save()
 
         context = {
-
+            
         }
             
-        return render(request, 'order_detail.html', context)
+        return render(request, 'order_cod_success.html', context)
+
+
+class OrderListView(LoginRequiredMixin, ListView):
+    template_name = "order_list.html"
+    context_object_name = 'orders'
+
+
+    def get_queryset(self):
+       user = User.objects.get(pk=self.request.user.pk)
+       return Order.objects.filter(user=user)

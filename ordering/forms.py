@@ -102,10 +102,17 @@ class ProfileForm(forms.ModelForm):
             'middle_initial',
             'last_name',
             'address',
+            'barangay',
             'cellphone_number',
             'email_address'
             ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['barangay'].widget.attrs.update({
+                    'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',  
+                })
             
                 
            

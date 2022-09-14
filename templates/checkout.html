@@ -13,29 +13,30 @@
                         <h2 class="text-3xl text-green-400 font-semibold">Balbacua</h2>
                     </div>
                     <div class="mb-10 text-3xl font-semibold">Checkout</div>
-                    <div class="mb-5">
+                    <div class="mb-5 text-gray-600">
                         <p>Please check your information before issue an order.</p>
                         <p>Please enter your current cellphone number and address.</p>
                         <p>J6 balbacuahan will contact your number after you issue an order</p>
                     </div>
-                    <div class="border border-j6primary border-dashed p-2">
-                        <h3>Customer's Information</h3>
+                    <div class="border border-j6primary border-dashed text-gray-600 p-2">
+                        <h3 class="text-xl font-semibold mb-2">Customer's Information</h3>
                         <div>First Name: {{profile.first_name|title}}</div>
                         <div>Last Name: {{profile.last_name|title}}</div>
                         <div>Address: {{profile.address|title}}</div>
+                        <div>Barangay: {{profile.barangay.name|title}}</div>
                         <div>Contact: {{profile.cellphone_number}}</div>
                         <div>Email: {{profile.email_address}}</div>
                         
                         
                     </div>
-                    <form action="{% url 'order' %}" method="POST" hx-boost="true" hx-confirm="Please check your contact and address before you order. Are you sure you want to order this?">
+                    
                         {% csrf_token %}
-                        <div class="mt-10 border border-gray-600 p-2">
+                        <div class="mt-10 border border-gray-600 text-gray-600 p-2">
                             <ul class="list-disc">
-                                <h3>List of Orders</h3>
+                                <h3 class="font-semibold text-xl mb-2">List of Orders</h3>
                         
                                 {% for cart in cart_items  %}
-                                <li class="ml-5">
+                                <li class="ml-5 mb-2">
                                     <div class="flex gap-2">
                                         <div name="">{{cart}} x</div>
                                     {% for key, value in counter.items %}
@@ -47,43 +48,39 @@
                                 </li>
                                 {% endfor %}
                             </ul>
-                            <div>
-                                <label for="payment">Payment method:</label>
+                            <form action="{% url 'order' %}" method="POST" hx-boost="true" hx-confirm="Please check your contact and address before you order. Are you sure you want to order this?">
+                                {% csrf_token %}
+                                <div class="mb-2">
+                                    <label for="payment">Payment method:</label>
                                 
-                                    
-                                <select class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40" name="payment" id="">
-                                <option value="GCASH">Gcash</option>
-                                <option value="COD">Cash on Delivery</option>
-                                </select>
+                                    <select name="payment" class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-j6primary focus:ring-j6primary focus:outline-none focus:ring focus:ring-opacity-40" name="payment" id="">
+                                    <option value="GCASH">Gcash</option>
+                                    <option value="COD">Cash on Delivery</option>
+                                    </select>
 
-                                <input class="hidden" name="shipping" value="{{shipping}}" type="text">
-
+                                <button id="btn-submit" x-data @form-submit.window="$el.click()" type="submit" class="hidden"></button>
+                            
+                                </div>
+                            </form>
+                           
+                            <div class="mb-2" id="shipping-fee">
+                                Shipping Fee: {{profile.barangay.shipping_fee}} 
                             </div>
-                            <div>
-                                <label for="barangay">Select Barangay</label>
-                                <select class="block w-full px-4 py-2 text-gray-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40" name="barangay">
-                                    {% for barangay in barangays %}
-                                        
-                                        <option value="{{barangay}}">{{ barangay }}</option>
-                                        
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div>Shipping Fee: 0</div>
-                            <input type="text" class="hidden">
+                            
                             <div>Total: {{final_total}}</div>
 
                         </div>
 
                         <div class="mt-5">
                             <button
-                            type="submit" 
+                            x-data
+                            @click="$dispatch('form-submit')"
                             class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
                             >
                             Order Submit
                             </button>
                         </div>
-                    </form>
+                    
                 </div>
             </div>
         </div>

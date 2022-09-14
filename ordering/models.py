@@ -8,12 +8,21 @@ class About(models.Model):
     about = models.TextField()
 
 
+class Barangay(models.Model):
+    name = models.CharField(max_length=255)
+    shipping_fee = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=255, blank=True, null=True)
     last_name = models.CharField(max_length=255, blank=True, null=True)
     middle_initial = models.CharField(max_length=1, blank=True, null=True)
     address = models.TextField(max_length=2225, blank=True, null=True)
+    barangay = models.ForeignKey(Barangay, related_name="barangay", on_delete=models.CASCADE)
     cellphone_number = models.IntegerField(blank=True, null=True)
     email_address = models.EmailField(blank=True, null=True)
 
@@ -21,13 +30,6 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-
-class Barangay(models.Model):
-    name = models.CharField(max_length=255)
-    shipping_fee = models.IntegerField()
-
-    def __str__(self):
-        return f"{self.name}"
 
 
 class Food(models.Model):
@@ -93,11 +95,17 @@ class Order(models.Model):
         ('Gcash', 'Gcash'),
         ('COD', 'COD')
     ]
+    order_status = [
+        ('Cancel', 'Cancel'),
+        ('Ongoing', 'Ongoing'),
+        ('Recieved', 'Recieved')
+    ]
     user = models.ForeignKey(User, related_name="user_order", on_delete=models.CASCADE)
     shipping_fee = models.PositiveIntegerField()
     total = models.PositiveIntegerField()
     payment_method = models.CharField(max_length=10, choices=payment)
     paid_status = models.CharField(max_length=10)
+    order_status = models.CharField(max_length=20, choices=order_status, default="Ongoing")
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
