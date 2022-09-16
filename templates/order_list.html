@@ -7,10 +7,10 @@
     <div class="container flex flex-col items-center min-h-screen py-10 mx-auto mb-10">
         {% for order in orders %}
             <a href="{% url 'order-detail' order.pk %}" hx-boost="true">
-                <div class="mb-2">Order id: {{order.id}} | Date: {{order.created_at.date}} | Time: {{order.created_at.time}}</div>
+                <div class="mb-2">Order id: {{order.id}} | Date: {{order.created_at.date}} | Time: {{order.created_at.time}} | {{ order.order_status}}</div>
             </a>
             
-            <div>
+            <div class="mb-5">
             <button 
             class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
             >

@@ -493,6 +493,13 @@ class OrderView(LoginRequiredMixin, View):
             )
         
         order_items.save()
+        send_mail(
+            "Message from J6 order system",
+            "A new order is added please check the admin site",
+            "myexample@email.com",
+            ['example@email.com'],
+            fail_silently=True,
+        )
 
         context = {
             
@@ -519,7 +526,7 @@ class OrderListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
        user = User.objects.get(pk=self.request.user.pk)
-       return Order.objects.filter(user=user)
+       return Order.objects.filter(user=user).order_by('-created_at')
 
 
 class OrderDetail(LoginRequiredMixin, View):
