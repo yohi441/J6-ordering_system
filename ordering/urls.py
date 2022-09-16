@@ -22,7 +22,7 @@ urlpatterns = [
     path('profile/edit', views.ProfileEditView.as_view(), name='profile-edit'),
     path('order/', views.OrderView.as_view(), name='order'),
     path('order/list/', views.OrderListView.as_view(), name="order-list"),
-
+    path('order/<int:pk>/', views.OrderDetail.as_view(), name="order-detail"),
     path('redirect/<int:amount>/', views.gcash_redirect, name="gcash-redirect"),
 
 

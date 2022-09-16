@@ -505,7 +505,37 @@ class OrderListView(LoginRequiredMixin, ListView):
     template_name = "order_list.html"
     context_object_name = 'orders'
 
+    def get_context_data(self,*args, **kwargs):
+        context = super(OrderListView, self).get_context_data(*args,**kwargs)
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
+
+        context['cart'] = len(cart)
+
+        return context
+
 
     def get_queryset(self):
        user = User.objects.get(pk=self.request.user.pk)
        return Order.objects.filter(user=user)
+
+
+class OrderDetail(LoginRequiredMixin, View):
+    
+    
+    def get(self, request, pk):
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
+
+        order = Order.objects.get(pk=pk)
+        order_items = OrderItems.objects.filter(order=order)
+        context = {
+            'order': order,
+            'order_items': order_items,
+            'cart': len(cart)
+        }
+        return render(request, 'order_detail.html', context)

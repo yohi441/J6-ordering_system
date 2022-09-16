@@ -4,9 +4,24 @@
 {% block content %}
 {% include 'components/header.html' %}
 
-    <div class="container flex flex-col items-center min-h-screen mx-auto py-10 mb-10">
+    <div class="container flex flex-col items-center min-h-screen py-10 mx-auto mb-10">
         {% for order in orders %}
-            <div>{{order}}</div>
+            <a href="{% url 'order-detail' order.pk %}" hx-boost="true">
+                <div class="mb-2">Order id: {{order.id}} | Date: {{order.created_at.date}} | Time: {{order.created_at.time}}</div>
+            </a>
+            
+            <div>
+            <button 
+            class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
+            >
+            Order recieved
+            </button>
+            <button           
+            class="px-4 py-2 text-white transition-colors duration-200 transform bg-red-600 rounded-md hover:bg-red-400 focus:outline-none focus:bg-red-500"
+            >
+            Cancel order
+            </button>
+            </div>
         {% empty %}
             <div>You order is empty</div>
         {% endfor %}

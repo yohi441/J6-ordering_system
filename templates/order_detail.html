@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% include 'components/header.html' %}
+
+    <div class="container flex flex-col items-center min-h-screen py-10 mx-auto mb-10">
+        <div class="">Order Details</div>
+        <div class="p-5 mb-5 border border-dashed">
+            <div>Full name: </div>
+            <div>Address: </div>
+            <div>Contact number: </div>
+        </div>
+        <div class="p-5 border border-gray-700">
+            <div>Order Id: {{order.id}}</div>
+            <ul class="p-3 list-disc">
+            <p>List of Orders</p>
+            {% for food in order_items %}
+            <li class="ml-5">{{food}} X {{food.quantity}}</li>
+            {% endfor %}
+            </ul>
+            <div>Payment method: {{ order.payment_method }}</div>
+            <div>Shipping fee: {{ order.shipping_fee }}PHP</div>
+            <div>Total: {{ order.total }} PHP</div>
+            <div>Order Status: {{order.order_status}}</div>
+        </div>
+        
+    </div>
+
+{% include 'components/footer.html' %}
+{% endblock content %}
+
+

@@ -20,12 +20,12 @@
                     <p class="pt-2 text-xl font-bold text-gray-500">P {{best.price}}</p>
                     <p class="pt-2 text-sm font-medium">
                         <button
-                        hx-get="{% url 'add_to_cart' best.pk %}"
-                        hx-swap="outerHTML"
-                        hx-target="#cart-icon" 
-                        class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
-                        >
-                        Add to Cart
+                            hx-get="{% url 'add_to_cart' best.pk %}"
+                            hx-swap="outerHTML"
+                            hx-target="#cart-icon" 
+                            class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
+                            >
+                            Add to Cart
                         </button>
                     </p>
                 </div>
