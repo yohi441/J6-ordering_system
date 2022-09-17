@@ -13,18 +13,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from ordering.forms import ProfileForm
 import requests
 from requests.auth import HTTPBasicAuth
+from django.core.paginator import Paginator
 
-def gcash_redirect(request, amount):
-    if 'cart' in request.session:
-        cart = request.session['cart']
-    else:
-        cart = []
-    checkout_url = paymongo_gcash(amount)
-    context = {
-        'cart': len(cart),
-        'checkout_url': checkout_url
-    }
-    return render(request, 'gcash_redirect_confirm.html', context)
 
 def paymongo_gcash(amount):
     final_amount = str(amount) + '00'
@@ -33,8 +23,8 @@ def paymongo_gcash(amount):
     payload = {"data": {"attributes": {
                 "amount": int(final_amount),
                 "redirect": {
-                    "success": "http://127.0.0.1:8000",
-                    "failed": "http://127.0.0.1:8001"
+                    "success": "http://127.0.0.1:8000/gcash/success/redirect/",
+                    "failed": "http://127.0.0.1:8000/gcash/failed/"
                 },
                 "billing": {
                     "name": "test",
@@ -53,6 +43,7 @@ def paymongo_gcash(amount):
     response = requests.post(url, json=payload, headers=headers, auth=HTTPBasicAuth('pk_test_VCsn3f8Rv4kvBNeVRjQZezK4', 'sk_test_eX67HqRLhcsmeh6TtUBAbaoM'))
 
     data = response.json()
+    
 
     return data['data']['attributes']['redirect']['checkout_url']
 
@@ -468,8 +459,6 @@ class OrderView(LoginRequiredMixin, View):
         total = int(sub_total) + int(shipping_fee)
         
         if payment_method == 'GCASH':
-            paid_status = 'Paid'
-            payment = 'Gcash'
             return redirect(reverse('gcash-redirect', kwargs={'amount': total}))
         elif payment_method == 'COD':
             paid_status = 'Unpaid'
@@ -502,7 +491,7 @@ class OrderView(LoginRequiredMixin, View):
         )
 
         context = {
-            
+            'cart': len(cart)
         }
             
         return render(request, 'order_cod_success.html', context)
@@ -511,6 +500,7 @@ class OrderView(LoginRequiredMixin, View):
 class OrderListView(LoginRequiredMixin, ListView):
     template_name = "order_list.html"
     context_object_name = 'orders'
+    paginate_by = 10
 
     def get_context_data(self,*args, **kwargs):
         context = super(OrderListView, self).get_context_data(*args,**kwargs)
@@ -533,6 +523,7 @@ class OrderDetail(LoginRequiredMixin, View):
     
     
     def get(self, request, pk):
+        profile = Profile.objects.get(user=request.user)
         if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
@@ -543,6 +534,125 @@ class OrderDetail(LoginRequiredMixin, View):
         context = {
             'order': order,
             'order_items': order_items,
-            'cart': len(cart)
+            'cart': len(cart),
+            'profile': profile
         }
         return render(request, 'order_detail.html', context)
+
+
+class GcashRedirect(LoginRequiredMixin, View):
+
+
+    def get(self, request, amount):
+        if 'cart' in request.session:
+            cart = request.session['cart']
+        else:
+            cart = []
+        checkout_url = paymongo_gcash(amount)
+        print(checkout_url[1])
+        context = {
+            'cart': len(cart),
+            'checkout_url': checkout_url
+        }
+        return render(request, 'gcash_redirect_confirm.html', context)
+
+
+class GcashRedirectSuccess(LoginRequiredMixin, View):
+
+    def get(self, request):
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
+
+        user = request.user
+        profile = Profile.objects.get(user=user)
+        sub_total = CartView().get_total(cart)
+        c = Counter(cart)
+        dict_counter = dict(c)
+        shipping_fee = profile.barangay.shipping_fee
+        total = int(sub_total) + int(shipping_fee)
+        order = Order.objects.create(
+            user=user,
+            total=total,
+            shipping_fee=int(shipping_fee),
+            payment_method="Gcash",
+            paid_status="Paid",
+        )
+        order.save()
+
+        for key in dict_counter:
+            food = Food.objects.get(pk=key)
+            order_items = OrderItems.objects.create(
+                order = order,
+                food = food,
+                quantity = int(dict_counter[key])
+            )
+        
+        order_items.save()
+        send_mail(
+            "Message from J6 order system",
+            "A new order is added please check the admin site",
+            "myexample@email.com",
+            ['example@email.com'],
+            fail_silently=True,
+        )
+
+        return render(request, 'gcash_redirect_success.html', {'cart': len(cart)})
+
+
+class GcashFailed(LoginRequiredMixin, View):
+
+    def get(self, request):
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
+        return render(request, 'gcash_redirect_fail.html', {'cart': len(cart)})
+
+
+class CancelOrder(LoginRequiredMixin, View):
+
+    def get(self, request, pk):
+        order = Order.objects.get(pk=pk)
+        order.order_status = "Cancel"
+        order.save()
+        orders = Order.objects.filter(user=request.user).order_by('-created_at')
+        page_obj = Paginator(orders, 10)
+        send_mail(
+            "Message from J6 order system",
+            "A cancel order is added please check the admin site",
+            "myexample@email.com",
+            ['example@email.com'],
+            fail_silently=True,
+        )
+        context = {
+            'orders': orders,
+            'page_obj': page_obj
+        }
+
+        return render(request, 'htmx_partials/order_partial.html', context)
+
+class ReceivedOrder(LoginRequiredMixin, View):
+
+    def get(self, request, pk):
+        order = Order.objects.get(pk=pk)
+        order.order_status = "Recieved"
+        order.save()
+        orders = Order.objects.filter(user=request.user).order_by('-created_at')
+        page_obj = Paginator(orders, 10)
+
+        send_mail(
+            "Message from J6 order system",
+            "A recieved order is added please check the admin site",
+            "myexample@email.com",
+            ['example@email.com'],
+            fail_silently=True,
+        )
+
+        context = {
+            'orders' : orders,
+            'page_obj': page_obj
+        }
+
+        return render(request, 'htmx_partials/order_partial.html', context)

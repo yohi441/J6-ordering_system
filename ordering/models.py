@@ -111,7 +111,10 @@ class Order(models.Model):
 
 
     def __str__(self):
-        return f"{self.user} - {self.created_at}"
+        return f"Date: {self.created_at.date()} - Time: {self.created_at.time()}"
+
+    class Meta:
+        ordering = ['created_at']
 
 
 class OrderItems(models.Model):

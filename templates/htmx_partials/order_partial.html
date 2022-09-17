@@ -1,0 +1,32 @@
+<div id="order">
+    {% for order in orders %}
+        <a href="{% url 'order-detail' order.pk %}" hx-boost="true">
+            <div class="mb-2">Order id: {{order.id}} | Date: {{order.created_at.date}} | Time: {{order.created_at.time}} | {{ order.order_status}}</div>
+        </a>
+        
+        {% if  order.order_status == 'Ongoing' %}
+        <div class="mb-5">
+            <button 
+            hx-confirm="Are you sure you recieved the order? This will notify the seller that you recieved the order"
+            hx-get="{% url 'recieved-order' order.pk %}"
+            hx-target="#order"
+            hx-swap="outerHTML"
+            class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
+            >
+            Order recieved
+            </button>
+            <button  
+            hx-confirm="Are you sure you want to cancel this order? This will notify the seller that you cancel the order"
+            hx-get="{% url 'cancel-order' order.pk %}" 
+            hx-target="#order"
+            hx-swap="outerHTML"        
+            class="px-4 py-2 text-white transition-colors duration-200 transform bg-red-600 rounded-md hover:bg-red-400 focus:outline-none focus:bg-red-500"
+            >
+            Cancel order
+            </button>
+        </div>
+        {% endif %}
+    {% empty %}
+        <div>You order is empty</div>
+    {% endfor %}
+    </div>

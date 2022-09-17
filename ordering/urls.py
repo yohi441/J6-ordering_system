@@ -23,7 +23,11 @@ urlpatterns = [
     path('order/', views.OrderView.as_view(), name='order'),
     path('order/list/', views.OrderListView.as_view(), name="order-list"),
     path('order/<int:pk>/', views.OrderDetail.as_view(), name="order-detail"),
-    path('redirect/<int:amount>/', views.gcash_redirect, name="gcash-redirect"),
+    path('redirect/<int:amount>/', views.GcashRedirect.as_view(), name="gcash-redirect"),
+    path('gcash/success/redirect/', views.GcashRedirectSuccess.as_view(), name="gcash-success-redirect"),
+    path('order/cance/<int:pk>/', views.CancelOrder.as_view(), name="cancel-order"),
+    path('order/recieved/<int:pk>/', views.ReceivedOrder.as_view(), name='recieved-order'),
+    path('gcash/failed/', views.GcashFailed.as_view(), name="gcash-fail")
 
 
 ]

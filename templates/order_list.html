@@ -5,26 +5,101 @@
 {% include 'components/header.html' %}
 
     <div class="container flex flex-col items-center min-h-screen py-10 mx-auto mb-10">
+        <div id="order">
         {% for order in orders %}
             <a href="{% url 'order-detail' order.pk %}" hx-boost="true">
                 <div class="mb-2">Order id: {{order.id}} | Date: {{order.created_at.date}} | Time: {{order.created_at.time}} | {{ order.order_status}}</div>
             </a>
             
+            {% if  order.order_status == 'Ongoing' %}
             <div class="mb-5">
-            <button 
-            class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
-            >
-            Order recieved
-            </button>
-            <button           
-            class="px-4 py-2 text-white transition-colors duration-200 transform bg-red-600 rounded-md hover:bg-red-400 focus:outline-none focus:bg-red-500"
-            >
-            Cancel order
-            </button>
+                <button 
+                hx-confirm="Are you sure you recieved the order? This will notify the seller that you recieved the order"
+                hx-get="{% url 'recieved-order' order.pk %}"
+                hx-target="#order"
+                hx-swap="outerHTML"
+                class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
+                >
+                Order recieved
+                </button>
+                <button  
+                hx-confirm="Are you sure you want to cancel this order? This will notify the seller that you cancel the order"
+                hx-get="{% url 'cancel-order' order.pk %}" 
+                hx-target="#order"
+                hx-swap="outerHTML"        
+                class="px-4 py-2 text-white transition-colors duration-200 transform bg-red-600 rounded-md hover:bg-red-400 focus:outline-none focus:bg-red-500"
+                >
+                Cancel order
+                </button>
             </div>
+            {% endif %}
         {% empty %}
             <div>You order is empty</div>
         {% endfor %}
+        </div>
+
+        <!--paginator-->
+        <div class="flex items-start justify-center gap-2 mt-10 text-xs">
+            {% if page_obj.has_previous %}
+          
+            <a
+              class="px-2 py-1 text-center text-gray-600 border rounded border-j6primary hover:bg-j6primary hover:text-white"
+              href="?page=1"
+            >
+              <span class="font-bold">&laquo;</span> <span class="hidden md:inline">First</span>
+            </a>
+          
+            <a
+              class="px-2 py-1 text-center text-gray-600 border rounded border-j6primary hover:bg-j6primary hover:text-white"
+              href="?page={{ page_obj.previous_page_number }}"
+            >
+            <span class="font-bold">&lsaquo;</span> <span class="hidden md:inline">Previous</span>
+            </a>
+          
+            {% endif %}
+             
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+          
+            <a
+              class="px-2 py-1 text-center text-white border rounded bg-j6primary border-j6primary hover:bg-j6primary hover:text-white"
+              href="?page={{ num }}"
+            >
+              {{num}}
+            </a>
+          
+            {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+          
+            <a
+              class="px-2 py-1 text-center text-gray-600 border rounded border-j6primary hover:bg-j6primary hover:text-white"
+              href="?page={{ num }}"
+            >
+              {{num}}
+            </a>
+          
+            {% endif %}
+            {% endfor %} 
+            {% if page_obj.has_next %}
+          
+            <a
+              class="px-2 py-1 text-center text-gray-600 border rounded border-j6primary hover:bg-j6primary hover:text-white"
+              href="?page={{ page_obj.next_page_number }}"
+            >
+            <span class="hidden md:inline">Next</span> <span class="font-bold">&rsaquo;</span>
+            
+            </a>
+          
+            <a
+              class="px-2 py-1 text-center text-gray-600 border rounded border-j6primary hover:bg-j6primary hover:text-white"
+              href="?page={{ page_obj.paginator.num_pages }}"
+            >
+            <span class="hidden md:inline">Last</span> <span class="font-bold">&raquo;</span>
+            </a>
+          
+            {% endif %}
+            
+          </div>
+   
         
     </div>
 

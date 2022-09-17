@@ -4,13 +4,13 @@
 {% block content %}
 {% include 'components/header.html' %}
 
-    <div class="container mx-auto py-10 mb-10">
-        <div class="container mx-auto max-w-md bg-white shadow-lg rounded-lg md:max-w-xl">
+    <div class="container py-10 mx-auto mb-10">
+        <div class="container max-w-md mx-auto bg-white rounded-lg shadow-lg md:max-w-xl">
             <div class="md:flex ">
                 <div class="w-full p-4 px-5 py-5">
-                    <div class="flex gap-2 flex-row mb-4">
+                    <div class="flex flex-row gap-2 mb-4">
                         <h2 class="text-3xl font-semibold">J6</h2>
-                        <h2 class="text-3xl text-green-400 font-semibold">Balbacua</h2>
+                        <h2 class="text-3xl font-semibold text-green-400">Balbacua</h2>
                     </div>
                     <div class="mb-10 text-3xl font-semibold">Checkout</div>
                     <div class="mb-5 text-gray-600">
@@ -18,8 +18,8 @@
                         <p>Please enter your current cellphone number and address.</p>
                         <p>J6 balbacuahan will contact your number after you issue an order</p>
                     </div>
-                    <div class="border border-j6primary border-dashed text-gray-600 p-2">
-                        <h3 class="text-xl font-semibold mb-2">Customer's Information</h3>
+                    <div class="p-2 text-gray-600 border border-dashed border-j6primary">
+                        <h3 class="mb-2 text-xl font-semibold">Customer's Information</h3>
                         <div>First Name: {{profile.first_name|title}}</div>
                         <div>Last Name: {{profile.last_name|title}}</div>
                         <div>Address: {{profile.address|title}}</div>
@@ -31,12 +31,12 @@
                     </div>
                     
                         {% csrf_token %}
-                        <div class="mt-10 border border-gray-600 text-gray-600 p-2">
+                        <div class="p-2 mt-10 text-gray-600 border border-gray-600">
                             <ul class="list-disc">
-                                <h3 class="font-semibold text-xl mb-2">List of Orders</h3>
+                                <h3 class="mb-2 text-xl font-semibold">List of Orders</h3>
                         
                                 {% for cart in cart_items  %}
-                                <li class="ml-5 mb-2">
+                                <li class="mb-2 ml-5">
                                     <div class="flex gap-2">
                                         <div name="">{{cart}} x</div>
                                     {% for key, value in counter.items %}

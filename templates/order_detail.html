@@ -7,9 +7,10 @@
     <div class="container flex flex-col items-center min-h-screen py-10 mx-auto mb-10">
         <div class="">Order Details</div>
         <div class="p-5 mb-5 border border-dashed">
-            <div>Full name: </div>
-            <div>Address: </div>
-            <div>Contact number: </div>
+            <div>Full name: {{profile.first_name|title}} {{profile.middle_initial|title}} {{profile.last_name|title}} </div>
+            <div>Address: {{profile.address|title}}</div>
+            <div>Barangay: {{profile.barangay.name}}</div>
+            <div>Contact number: {{profile.cellphone_number}}</div>
         </div>
         <div class="p-5 border border-gray-700">
             <div>Order Id: {{order.id}}</div>
