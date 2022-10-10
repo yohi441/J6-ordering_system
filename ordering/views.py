@@ -173,11 +173,21 @@ class AddtocartView(View):
 
     def get(self, request, pk):
 
+        obj = Food.objects.get(pk=pk)
+
+        if obj.status == 'Out Of Stock':
+            messages.error(request, "Error.. Out of Stock")
+            
+            cart = self.request.session['cart']
+            return render(request, 'htmx_partials/add_to_cart_partial.html', {'cart': len(cart)})
+
         if 'cart' in self.request.session:
             self.request.session['cart'].append(pk)
 
         else:
             self.request.session['cart'] = [pk]
+
+        
 
         self.request.session.modified = True
         cart = self.request.session['cart']
