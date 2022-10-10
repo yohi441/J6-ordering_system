@@ -5,11 +5,25 @@
 {% include 'components/header.html' %}
 
     <div class="container flex flex-col items-center min-h-screen py-10 mx-auto mb-10">
-        <div id="order">
+        <div id="order" class="flex flex-col gap-3">
         {% for order in orders %}
+        
+          <div class="p-3 text-gray-700 border shadow-md border-j6primary">
+            
             <a href="{% url 'order-detail' order.pk %}" hx-boost="true">
                 <div class="mb-2">Order id: {{order.id}} | Date: {{order.created_at.date}} | Time: {{order.created_at.time}} | {{ order.order_status}}</div>
             </a>
+            <p>Orders:</p>
+            {% for items in order_list %}
+              {% if items.order.id == order.id %}
+              <div class="flex gap-2">
+                <p>{{items}}</p>
+                <p>X</p>
+                <p>{{items.quantity}}</p>
+              </div>  
+              {% endif %}
+            {% endfor %}
+          </div>
             
             {% if  order.order_status == 'Ongoing' %}
             <div class="mb-5">

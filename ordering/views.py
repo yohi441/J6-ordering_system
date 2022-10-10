@@ -504,11 +504,13 @@ class OrderListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self,*args, **kwargs):
         context = super(OrderListView, self).get_context_data(*args,**kwargs)
+        order_list = OrderItems.objects.all()
+        
         if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
             cart = []
-
+        context['order_list'] = order_list
         context['cart'] = len(cart)
 
         return context

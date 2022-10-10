@@ -5,14 +5,14 @@
 {% include 'components/header.html' %}
 
     <div class="container flex flex-col items-center min-h-screen py-10 mx-auto mb-10">
-        <div class="">Order Details</div>
-        <div class="p-5 mb-5 border border-dashed">
-            <div>Full name: {{profile.first_name|title}} {{profile.middle_initial|title}} {{profile.last_name|title}} </div>
-            <div>Address: {{profile.address|title}}</div>
-            <div>Barangay: {{profile.barangay.name}}</div>
-            <div>Contact number: {{profile.cellphone_number}}</div>
+        <div class="mb-5 text-xl text-gray-700">Order Details</div>
+        <div class="p-5 mb-5 text-gray-700 border border-dashed border-j6primary">
+            <div>Full name: <span class="text-j6primary">{{profile.first_name|title}} {{profile.middle_initial|title}} {{profile.last_name|title}}</span> </div>
+            <div>Address: <span class="text-j6primary">{{profile.address|title}}</span></div>
+            <div>Barangay: <span class="text-j6primary">{{profile.barangay.name}}</span></div>
+            <div>Contact number: <span class="text-j6primary">{{profile.cellphone_number}}</span></div>
         </div>
-        <div class="p-5 border border-gray-700">
+        <div class="p-5 text-gray-700 border border-j6primary">
             <div>Order Id: {{order.id}}</div>
             <ul class="p-3 list-disc">
             <p>List of Orders</p>
@@ -20,10 +20,10 @@
             <li class="ml-5">{{food}} X {{food.quantity}}</li>
             {% endfor %}
             </ul>
-            <div>Payment method: {{ order.payment_method }}</div>
-            <div>Shipping fee: {{ order.shipping_fee }}PHP</div>
-            <div>Total: {{ order.total }} PHP</div>
-            <div>Order Status: {{order.order_status}}</div>
+            <div>Payment method: <span class="text-j6primary">{{ order.payment_method }}</span></div>
+            <div>Shipping fee: <span class="text-j6primary">{{ order.shipping_fee }}PHP</span></div>
+            <div>Total: <span class="text-j6primary">{{ order.total }} PHP</span></div>
+            <div>Order Status: <span class="text-j6primary">{{order.order_status}}</span></div>
         </div>
         
     </div>

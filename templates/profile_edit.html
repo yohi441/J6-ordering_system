@@ -5,34 +5,35 @@
 
 {% include 'components/header.html' %}
 
-    <div class="container mx-auto py-10 mb-10">
-        <div class="container mx-auto max-w-md bg-white shadow-lg rounded-lg md:max-w-xl">
+    <div class="container py-10 mx-auto mb-10">
+        <div class="container max-w-md mx-auto bg-white rounded-lg shadow-lg md:max-w-xl">
             <div class="md:flex ">
                 <div class="w-full p-4 px-5 py-5">
-                    <div class="flex gap-2 flex-row mb-4">
+                    <div class="flex flex-row gap-2 mb-4">
                         <h2 class="text-3xl font-semibold">J6</h2>
-                        <h2 class="text-3xl text-green-400 font-semibold">Balbacua</h2>
+                        <h2 class="text-3xl font-semibold text-green-400">Balbacua</h2>
                     </div>
                     <div class="mb-10 text-3xl font-semibold">Profile</div>
-                    <div class="border border-j6primary border-dashed p-5">
-                        <h3>Customer's Information</h3>
-                        
-                        <form action="{% url 'profile-edit' %}" method="POST" hx-boost="true">
-                            {% csrf_token %}
-                            {{form}}
-                        
-                        
-                    </div>
+                    <form action="{% url 'profile-edit' %}" method="POST" hx-boost="true">
+                        <div class="p-5 border border-dashed border-j6primary">
+                            <h3>Customer's Information</h3>
+                            
+                            
+                                {% csrf_token %}
+                                {{form}}
+                            
+                            
+                        </div>
 
-                    <div class="mt-5">
+                        <div class="mt-5">
+                            
+                                <button
+                                class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
+                                >
+                                Save Profile
+                                </button>
                         
-                            <button
-                            class="px-4 py-2 text-white transition-colors duration-200 transform rounded-md bg-j6primary hover:bg-green-500 focus:outline-none focus:bg-green-500"
-                            >
-                            Save Profile
-                            </button>
-                      
-                    </div>
+                        </div>
                     </form>
                         
                     
