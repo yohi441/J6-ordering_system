@@ -39,7 +39,7 @@
                 <a href="{% url 'detail-view' food.pk %}" class="block">
                     <img class="object-cover w-full mb-2 overflow-hidden rounded-lg shadow-sm max-h-64" src="{{ food.food_image.url }}">
                 </a>
-                <div class="bg-purple-500  items-center px-3 py-1.5 leading-none rounded-full text-xs font-medium uppercase text-white inline-block">
+                <div class="{% if food.status == 'Out Of Stock'%}bg-red-500{%else%}bg-purple-500{% endif %}  items-center px-3 py-1.5 leading-none rounded-full text-xs font-medium uppercase text-white inline-block">
                     <span>{{food.status|title}}</span>
                 </div>
                 <h2 class="text-lg font-bold sm:text-xl md:text-2xl"><a href="#_">{{food.name|title}}</a></h2>

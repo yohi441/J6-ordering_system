@@ -78,7 +78,7 @@ class IndexView(View):
         testimonials = Testimonial.objects.all()[:3]
         bests = Food.objects.filter(status="Best Seller")[:1]
         foods = Food.objects.exclude(
-            Q(status="Best Seller") | Q(status="Out Of Stock"))
+            Q(status="Best Seller"))
         if 'cart' in self.request.session:
             cart = self.request.session['cart']
         else:
