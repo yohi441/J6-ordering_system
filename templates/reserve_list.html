@@ -1,28 +1,21 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 {% include 'components/header.html' %}
+<div class="min-h-screen">
 
     <div class="container flex flex-col items-center min-h-screen py-10 mx-auto mb-10">
+        <h3 class="mb-10 text-3xl text-gray-700 sm:text-4xl md:text-3xl lg:text-4xl">Catering service order list</h3>
+        <p class="text-j6primary">The status of your reservation will update once the admin check your order and contact you via email or call</p>
+        <p class="mb-10 text-red-500">Note: If you want to cancel the catering reservation please call or contact us</p>
         <div id="order" class="flex flex-col gap-3">
-        {% for order in orders %}
+        {% for reserve in reserve_list %}
         
           <div class="p-3 text-gray-700 border shadow-md border-j6primary">
-            
-            <a href="{% url 'order-detail' order.pk %}" hx-boost="true">
-                <div class="mb-2">Order id: {{order.id}} | Order Date: {{order.created_at}} | Status: {{ order.order_status}}</div>
-            </a>
-            <p>Orders:</p>
-            {% for items in order_list %}
-              {% if items.order.id == order.id %}
-              <div class="flex gap-2">
-                <p>{{items}}</p>
-                <p>X</p>
-                <p>{{items.quantity}}</p>
-              </div>  
-              {% endif %}
-            {% endfor %}
+            Reserve Date: {{ reserve.date }} |
+            Package: {{ reserve.party_package }} |
+            Status: {{ reserve.reserve_status }} |
+            Place Order Date: {{ reserve.created_at }}
           </div>
             
             {% if  order.order_status == 'Ongoing' %}
@@ -117,7 +110,8 @@
         
     </div>
 
+
+</div>
 {% include 'components/footer.html' %}
+
 {% endblock content %}
-
-

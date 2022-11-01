@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import get_user_model
-from ordering.models import Profile
+from ordering.models import Profile, CateringReserve
 
 
 User = get_user_model()
@@ -115,6 +115,24 @@ class ProfileForm(forms.ModelForm):
                 })
             
                 
-           
+class CateringForm(forms.ModelForm):
+
+    class Meta:
+        model = CateringReserve
+        fields = [
+            'date',
+            'party_package',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['date'].widget.attrs.update({
+                    'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',  
+                })
+        self.fields['party_package'].widget.attrs.update({
+                    'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',  
+                })
+            
     
         

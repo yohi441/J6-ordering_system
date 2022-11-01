@@ -27,7 +27,9 @@ urlpatterns = [
     path('gcash/success/redirect/', views.GcashRedirectSuccess.as_view(), name="gcash-success-redirect"),
     path('order/cance/<int:pk>/', views.CancelOrder.as_view(), name="cancel-order"),
     path('order/recieved/<int:pk>/', views.ReceivedOrder.as_view(), name='recieved-order'),
-    path('gcash/failed/', views.GcashFailed.as_view(), name="gcash-fail")
+    path('gcash/failed/', views.GcashFailed.as_view(), name="gcash-fail"),
+    path('reserve/catering/', views.ReserveCatering.as_view(), name='reserve-catering'),
+    path('reserve/list/status/', views.ReserveList.as_view(), name='reserve-list'),
 
 
 ]

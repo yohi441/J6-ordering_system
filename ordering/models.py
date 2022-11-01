@@ -7,6 +7,9 @@ User = get_user_model()
 class About(models.Model):
     about = models.TextField()
 
+    def __str__(self) -> str:
+        return f"{self.about}"
+
 
 class Barangay(models.Model):
     name = models.CharField(max_length=255)
@@ -28,7 +31,7 @@ class Profile(models.Model):
 
 
     def __str__(self):
-        return self.user.username
+        return f"{self.user.username}"
 
 
 
@@ -52,7 +55,7 @@ class Food(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name}"
 
 
 
@@ -64,7 +67,7 @@ class Testimonial(models.Model):
     post_origin = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.full_name
+        return f"{self.full_name}"
 
     @property
     def get_image(self):
@@ -78,7 +81,7 @@ class Catering(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return self.package_set
+        return f"{self.package_set}"
 
 
 class FoodList(models.Model):
@@ -87,7 +90,7 @@ class FoodList(models.Model):
         Catering, related_name="catering", on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return self.food_name
+        return f"{self.food_name}"
 
 
 class Order(models.Model):
@@ -111,7 +114,7 @@ class Order(models.Model):
 
 
     def __str__(self):
-        return f"Date: {self.created_at.date()} - Time: {self.created_at.time()}"
+        return f"{str(self.user).title()} - {self.created_at.strftime('%B %d, %Y')}"
 
     class Meta:
         ordering = ['created_at']
@@ -127,3 +130,39 @@ class OrderItems(models.Model):
 
     def __str__(self):
         return f"{self.food}"
+
+class CateringSchedule(models.Model):
+    date = models.DateField()
+
+    def __str__(self):
+        return f"{self.date.strftime('%B %d, %Y')}"
+
+class CateringReserve(models.Model):
+    package_choice = [
+        ('Package A', 'Package A'),
+        ('Package B', 'Package B'),
+        ('Package C', 'Package C'),
+        ('Package D', 'Package D'),
+        ('Package E', 'Package E'),
+        ('Package F', 'Package F'),
+        ('Customize', 'Customize')
+    ]
+    catering_status = [
+        ('Approve', 'Approve'),
+        ('Ongoing/Pending', 'Ongoing/Pending'),
+        ('Disapprove', 'Disapprove'),
+        ('Cancel', 'Cancel')
+    ]
+    user = models.ForeignKey(User, related_name='catering_user', on_delete=models.CASCADE)
+    date = models.ForeignKey(CateringSchedule, related_name='catering_date', on_delete=models.CASCADE)
+    party_package = models.CharField(max_length=10, choices=package_choice, default='Package A')
+    reserve_status = models.CharField(max_length=20, choices=catering_status, default='Ongoing/Pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+
+    def __str__(self):
+        return f"{self.user}"

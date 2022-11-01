@@ -1,19 +1,19 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View, DetailView, ListView
-from ordering.models import Food, Testimonial, Catering, Profile, Order, OrderItems, About
+from ordering.models import Food, Testimonial, Catering, Profile, Order, OrderItems, About, CateringReserve
 from collections import Counter
 from django.contrib import messages
-from ordering.forms import ContactForm, RegisterForm, LoginForm
+from ordering.forms import ContactForm, RegisterForm, LoginForm, CateringForm
 from django.db.models import Q
 from django.core.mail import send_mail
 from django.contrib.auth import logout, login
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from ordering.forms import ProfileForm
+from django.core.paginator import Paginator
 import requests
 from requests.auth import HTTPBasicAuth
-from django.core.paginator import Paginator
 
 
 def paymongo_gcash(amount):
@@ -668,3 +668,62 @@ class ReceivedOrder(LoginRequiredMixin, View):
         }
 
         return render(request, 'htmx_partials/order_partial.html', context)
+
+class ReserveCatering(View):
+    template_name = 'reserve_catering.html'
+
+    def get(self, request):
+        form = CateringForm()
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
+        if not request.user.is_authenticated:
+            messages.error(request, "Login is required!")
+            return redirect(reverse('service'))
+        context = {
+            'form': form,
+            'cart': len(cart),
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        user = User.objects.get(pk=request.user.pk)
+        form = CateringForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = user
+            instance.save()
+            messages.success(request, 'Request submit successfully')
+            return redirect(reverse('reserve-list'))
+
+        form = CateringForm()
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []    
+
+        context = {
+            'form': form,
+            'cart': len(cart),
+        }
+        return render(request, self.template_name, context)
+
+
+class ReserveList(View):
+    template_name = 'reserve_list.html'
+
+    def get(self, request):
+        if 'cart' in self.request.session:
+            cart = self.request.session['cart']
+        else:
+            cart = []
+        if not request.user.is_authenticated:
+            messages.error(request, "Login is required!")
+            return redirect(reverse('service'))
+        reserve_list = CateringReserve.objects.filter(user=request.user)
+        context = {
+            'reserve_list': reserve_list,
+            'cart': len(cart),
+        }
+        return render(request, self.template_name, context)

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'components/header.html' %}
+<div class="container min-h-screen mx-auto">
+    <h3 class="mb-10 text-3xl text-center text-gray-700 sm:text-4xl md:text-3xl lg:text-4xl">
+        Reserve Catering Service
+    </h3>
+    <p class="text-center text-j6primary">Note: The available reservation dates for catering is</p>
+    <p class="text-center text-j6primary">listed in the dropdown menu. If the desired date is not</p>
+    <p class="mb-5 text-center text-j6primary">listed in the dropdown menu that date is not available</p>
+
+    <p class="mb-5 text-center text-j6primary">For more information call or contact us</p>
+
+    <div class="max-w-lg mx-auto mt-16">
+        <form action="{% url 'reserve-catering' %}" hx-boost="true" method="POST" hx-confirm="Are you sure?">
+            {% csrf_token %}
+            {{form}}
+            <button class="px-3 py-2 text-white bg-j6primary hover:bg-green-500">Submit</button>
+        </form>
+    </div>
+    
+</div>
+{% include 'components/footer.html'%}
+
+{% endblock content %}
