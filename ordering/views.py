@@ -695,6 +695,13 @@ class ReserveCatering(View):
             instance.user = user
             instance.save()
             messages.success(request, 'Request submit successfully')
+            send_mail(
+            "Message from J6 order system",
+            "A new reservation is added please check the admin site",
+            "myexample@email.com",
+            ['example@email.com'],
+            fail_silently=True,
+        )
             return redirect(reverse('reserve-list'))
 
         form = CateringForm()
