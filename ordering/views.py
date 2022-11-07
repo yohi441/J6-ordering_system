@@ -14,7 +14,16 @@ from ordering.forms import ProfileForm
 from django.core.paginator import Paginator
 import requests
 from requests.auth import HTTPBasicAuth
+import datetime
 
+
+def convert_date(date):
+    format = '%Y-%m-%d'  # The format
+    datetime_str = datetime.datetime.strptime(date, format)
+ 
+    return datetime_str
+ 
+ 
 
 def paymongo_gcash(amount):
     final_amount = str(amount) + '00'
@@ -690,6 +699,12 @@ class ReserveCatering(View):
     def post(self, request):
         user = User.objects.get(pk=request.user.pk)
         form = CateringForm(request.POST)
+        date = convert_date(form.data['date'])
+
+        if date.date() < datetime.datetime.now().date():
+            messages.error(request, 'Invalid Date. Date is already pass')
+            return redirect(reverse('reserve-catering'))
+
         if form.is_valid():
             instance = form.save(commit=False)
             instance.user = user
@@ -703,7 +718,7 @@ class ReserveCatering(View):
             fail_silently=True,
         )
             return redirect(reverse('reserve-list'))
-
+        messages.error(request, 'The date is unavailable. Date is already booked')
         form = CateringForm()
         if 'cart' in self.request.session:
             cart = self.request.session['cart']

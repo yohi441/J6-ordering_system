@@ -94,10 +94,7 @@ class FoodList(models.Model):
 
 
 class Order(models.Model):
-    payment = [
-        ('Gcash', 'Gcash'),
-        ('COD', 'COD')
-    ]
+  
     order_status = [
         ('Cancel', 'Cancel'),
         ('Ongoing', 'Ongoing'),
@@ -106,7 +103,6 @@ class Order(models.Model):
     user = models.ForeignKey(User, related_name="user_order", on_delete=models.CASCADE)
     shipping_fee = models.PositiveIntegerField()
     total = models.PositiveIntegerField()
-    payment_method = models.CharField(max_length=10, choices=payment)
     paid_status = models.CharField(max_length=10)
     order_status = models.CharField(max_length=20, choices=order_status, default="Ongoing")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -131,11 +127,6 @@ class OrderItems(models.Model):
     def __str__(self):
         return f"{self.food}"
 
-class CateringSchedule(models.Model):
-    date = models.DateField()
-
-    def __str__(self):
-        return f"{self.date.strftime('%B %d, %Y')}"
 
 class CateringReserve(models.Model):
     package_choice = [
@@ -154,7 +145,7 @@ class CateringReserve(models.Model):
         ('Cancel', 'Cancel')
     ]
     user = models.ForeignKey(User, related_name='catering_user', on_delete=models.CASCADE)
-    date = models.ForeignKey(CateringSchedule, related_name='catering_date', on_delete=models.CASCADE)
+    date = models.DateField(unique=True)
     party_package = models.CharField(max_length=10, choices=package_choice, default='Package A')
     reserve_status = models.CharField(max_length=20, choices=catering_status, default='Ongoing/Pending')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -165,4 +156,4 @@ class CateringReserve(models.Model):
 
 
     def __str__(self):
-        return f"{self.user}"
+        return f"{self.user} - {self.created_at.strftime('%B %d, %Y')}"
