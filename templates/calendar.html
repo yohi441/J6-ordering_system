@@ -1,0 +1,280 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>J6 Balbacuahan</title>
+	<meta charset="UTF-8" />
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+	<link rel="stylesheet" href="{% static 'css/tailwind1.0.min.css' %}">
+	<script src="{% static 'js/alpinv2.js' %}" defer></script>
+    <script src="{% static 'js/htmx.js' %}"></script>
+
+
+	<style>
+		[x-cloak] {
+			display: none;
+		}
+	</style>
+</head>
+
+<body>
+    {% include 'components/header.html' %}
+    <div id="message-swap">
+        {% if messages %}
+        {% for message in messages %}
+        <div x-data="{open:true}" x-show="open" x-init="setTimeout(()=>{open=false}, 2000)" x-cloak class="container fixed z-50 px-5 mx-auto top-5">
+            <div class="{% if message.tags %}{{message.tags}}{% endif %}" role="alert">
+                 {{message}}
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+<div class="h-screen antialiased bg-gray-100 sans-serif">
+	<div x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak>
+		<div class="container px-4 py-2 mx-auto md:py-24">
+
+			  
+			<div class="flex justify-center mb-6 -mt-16 text-2xl font-bold text-gray-800">
+				Reserve Catering
+			</div>
+            <div class="mb-10 space-y-4">
+                <div class="space-x-2"><span>Symbol =></span><span class="px-4 bg-yellow-500 border border-gray-700"></span><span>Date is already passed</span></div>
+                <div class="space-x-2"><span>Symbol =></span><span class="px-4 bg-red-500 border border-gray-700"></span><span>Date is already reserve</span></div>
+                <div class="space-x-2"><span>Symbol =></span><span class="px-4 bg-white border border-gray-700"></span><span>Date is available for reservation</span></div>
+            </div>
+
+			<div class="overflow-hidden bg-white rounded-lg shadow">
+
+				<div class="flex items-center justify-between px-6 py-2">
+					<div>
+						<span x-text="MONTH_NAMES[month]" class="text-lg font-bold text-gray-800"></span>
+						<span x-text="year" class="ml-1 text-lg font-normal text-gray-600"></span>
+					</div>
+					<div class="px-1 border rounded-lg" style="padding-top: 2px;">
+						<button 
+							type="button"
+							class="inline-flex items-center p-1 leading-none transition duration-100 ease-in-out rounded-lg cursor-pointer hover:bg-gray-200" 
+							:class="{'cursor-not-allowed opacity-25': month == 0 }"
+							:disabled="month == 0 ? true : false"
+							@click="month--; getNoOfDays()">
+							<svg class="inline-flex w-6 h-6 leading-none text-gray-500"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+							</svg>  
+						</button>
+						<div class="inline-flex h-6 border-r"></div>		
+						<button 
+							type="button"
+							class="inline-flex items-center p-1 leading-none transition duration-100 ease-in-out rounded-lg cursor-pointer hover:bg-gray-200" 
+							:class="{'cursor-not-allowed opacity-25': month == 11 }"
+							:disabled="month == 11 ? true : false"
+							@click="month++; getNoOfDays()">
+							<svg class="inline-flex w-6 h-6 leading-none text-gray-500"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+							</svg>									  
+						</button>
+					</div>
+				</div>	
+                
+                <div>
+                    <div class="flex flex-wrap">
+						<template x-for="(day, index) in DAYS" :key="index">	
+							<div style="width: 14.26%" class="px-2 py-2">
+								<div
+									x-text="day" 
+									class="text-sm font-bold tracking-wide text-center text-gray-600 uppercase"></div>
+							</div>
+						</template>
+					</div>
+                </div>
+				<div class="-mx-1 -mb-1">
+					
+
+					<div class="flex flex-wrap border-t border-l">
+						<template x-for="blankday in blankdays">
+							<div 
+								style="width: 14.28%; height: 120px"
+								class="px-4 pt-2 text-center border-b border-r"	
+							></div>
+						</template>	
+                        
+    
+						<template x-for="(date, dateIndex) in no_of_days" :key="dateIndex">
+                            	
+							<div style="width: 14.28%; height: 120px" class="relative px-4 pt-2 border-b border-r">
+								<div @click="showEventModal(date)" x-text="date" style="height: 80px;" 
+                                class="flex items-center justify-center mt-3 overflow-y-auto text-xl text-gray-700 border border-gray-700 cursor-pointer hover:bg-blue-200"
+                                :class="{'bg-red-500': isInTheListOfReserve(getDate(year, month, date+1)), 'bg-yellow-500 line-through': getDateAlp(year, month, date) < TODAY}">
+								 
+								</div>
+                                
+							</div>
+						</template>
+                        
+                            
+                        
+					</div>
+				</div>
+			</div>
+		</div>
+       
+
+		<!-- Modal -->
+		<div style=" background-color: rgba(0, 0, 0, 0.8)" class="fixed top-0 bottom-0 left-0 right-0 z-40 w-full h-full" x-show.transition.opacity="openEventModal">
+			<div class="absolute relative left-0 right-0 max-w-xl p-4 mx-auto mt-24 overflow-hidden">
+				<div class="absolute top-0 right-0 inline-flex items-center justify-center w-10 h-10 text-gray-500 bg-white rounded-full shadow cursor-pointer hover:text-gray-800"
+					x-on:click="openEventModal = !openEventModal">
+					<svg class="w-6 h-6 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+						<path
+							d="M16.192 6.344L11.949 10.586 7.707 6.344 6.293 7.758 10.535 12 6.293 16.242 7.707 17.656 11.949 13.414 16.192 17.656 17.606 16.242 13.364 12 17.606 7.758z" />
+					</svg>
+				</div>
+
+				<div class="block w-full p-8 overflow-hidden bg-white rounded-lg shadow">
+                    <div class="mb-10 text-xl text-j6primary">
+                        <h3>Choose Your Catering Package</h3>
+                        <p class="text-base">After the transaction is complete the admin will contact you</p>
+                    </div>
+					<form action="{% url 'reserve-catering' %}" method="POST">
+                        {% csrf_token %}
+                        {{form.date}}
+                        {{form.party_package}}
+
+                        <div class="flex justify-end">
+                            <button class="px-3 py-2 mt-5 text-white bg-j6primary hover:bg-green-500">Submit</button>
+                        </div>
+                    </form>
+				 
+ 
+					
+				</div>
+			</div>
+		</div>
+		<!-- /Modal -->
+
+        {% include 'components/footer.html' %}
+	</div>
+
+	<script>
+		const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const TODAY = new Date();
+        const textInput = document.getElementById("id_date");
+        
+
+        function getDate(year, month, day) {
+            let D = new Date(year,month,day)
+            return D.toISOString().slice(0,10)
+        };
+
+        function getListReserve() {
+            let reservelist = {{ reserve_list|safe }};
+            //let dateList = [];
+            //reservelist.forEach(function(item, index){
+            //    dateList.push(new Date(item))
+            //});
+            return reservelist
+        };
+
+        function isInTheListOfReserve(date){
+            let status = false
+            let list = this.getListReserve(); 
+            list.forEach(function(item,index){
+                if (item == date){
+                    status = true
+                }
+            });
+            return status
+           
+        };
+
+		function app() {
+			return {
+				month: '',
+				year: '',
+				no_of_days: [],
+				blankdays: [],
+				days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                event_date: '',
+
+				openEventModal: false,
+
+				initDate() {
+					let today = new Date();
+					this.month = today.getMonth();
+					this.year = today.getFullYear();
+					this.datepickerValue = new Date(this.year, this.month, today.getDate()).toDateString();
+				},
+
+
+
+				isToday(date) {
+					const today = new Date();
+					const d = new Date(this.year, this.month, date);
+
+					return today.toDateString() === d.toDateString() ? true : false;
+				},
+
+				showEventModal(date) {
+					// open the modal
+                    this.openEventModal = true;
+                   
+                    textInput.value = `${this.year}-${this.month+1}-${date}`;
+                   
+				},
+
+				addEvent() {
+					if (this.event_title == '') {
+						return;
+					}
+
+					this.events.push({
+						event_date: this.event_date,
+						event_title: this.event_title,
+						event_theme: this.event_theme
+					});
+
+					console.log(this.events);
+
+					// clear the form data
+					this.event_title = '';
+					this.event_date = '';
+					this.event_theme = 'blue';
+
+					//close the modal
+					this.openEventModal = false;
+				},
+
+				getNoOfDays() {
+					let daysInMonth = new Date(this.year, this.month + 1, 0).getDate();
+
+					// find where to start calendar day of week
+					let dayOfWeek = new Date(this.year, this.month).getDay();
+					let blankdaysArray = [];
+					for ( var i=1; i <= dayOfWeek; i++) {
+						blankdaysArray.push(i);
+					}
+
+					let daysArray = [];
+					for ( var i=1; i <= daysInMonth; i++) {
+						daysArray.push(i);
+					}
+					
+					this.blankdays = blankdaysArray;
+					this.no_of_days = daysArray;
+				},
+
+                getDateAlp(year, month, day) {
+                    let D = new Date(year,month,day)
+                    return D
+                }
+
+                
+			}
+		}
+	</script>
+</body>
+
+</html>

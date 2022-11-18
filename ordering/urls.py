@@ -30,6 +30,7 @@ urlpatterns = [
     path('gcash/failed/', views.GcashFailed.as_view(), name="gcash-fail"),
     path('reserve/catering/', views.ReserveCatering.as_view(), name='reserve-catering'),
     path('reserve/list/status/', views.ReserveList.as_view(), name='reserve-list'),
-
+    path('calendar/', views.calendar, name='calendar'),
+    path('api/reserve/', views.reserve_serialize_data, name='reserve_serialize_data'),
 
 ]

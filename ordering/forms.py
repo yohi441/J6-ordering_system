@@ -123,15 +123,15 @@ class CateringForm(forms.ModelForm):
             'date',
             'party_package',
         ]
-        widgets = {
-            'date' : forms.DateInput(attrs={'type':'date'})
-        }
+        # widgets = {
+        #     'date' : forms.DateInput(attrs={'type':'date'})
+        # }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields['date'].widget.attrs.update({
-                    'class': 'block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
+                    'class': 'hidden block w-full px-2 py-1 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-j6primary focus:outline-none',
                     'type': 'date',  
                 })
         self.fields['party_package'].widget.attrs.update({

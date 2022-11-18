@@ -15,6 +15,33 @@ from django.core.paginator import Paginator
 import requests
 from requests.auth import HTTPBasicAuth
 import datetime
+from django.core.serializers import serialize
+from django.http import HttpResponse
+
+
+def reserve_serialize_data(request):
+    qs = catering_reserve_list = CateringReserve.objects.all()
+    data = serialize("json", qs, fields=('date'))
+    return HttpResponse(data, content_type="application/json")
+
+def calendar(request):
+    catering_reserve_list = CateringReserve.objects.all()
+    reserve_list = [x.date.isoformat() for x in catering_reserve_list]
+    form = CateringForm()
+    if 'cart' in request.session:
+        cart = request.session['cart']
+    else:
+        cart = []
+    if not request.user.is_authenticated:
+        messages.error(request, "Login is required!")
+        return redirect(reverse('service'))
+
+    context = {
+        'reserve_list': reserve_list,
+        'cart': len(cart),
+        'form': form,
+    }
+    return render(request, 'calendar.html', context)
 
 
 def convert_date(date):
@@ -473,21 +500,15 @@ class OrderView(LoginRequiredMixin, View):
         sub_total = CartView().get_total(cart)
         c = Counter(cart)
         dict_counter = dict(c)
-        payment_method = request.POST['payment']
         shipping_fee = profile.barangay.shipping_fee
         total = int(sub_total) + int(shipping_fee)
-        
-        if payment_method == 'GCASH':
-            return redirect(reverse('gcash-redirect', kwargs={'amount': total}))
-        elif payment_method == 'COD':
-            paid_status = 'Unpaid'
-            payment = 'COD'
+        paid_status = 'Unpaid'
+
 
         order = Order.objects.create(
             user=user,
             total=total,
             shipping_fee=int(shipping_fee),
-            payment_method=payment,
             paid_status=paid_status,
         )
         order.save()
@@ -701,9 +722,9 @@ class ReserveCatering(View):
         form = CateringForm(request.POST)
         date = convert_date(form.data['date'])
 
-        if date.date() < datetime.datetime.now().date():
-            messages.error(request, 'Invalid Date. Date is already pass')
-            return redirect(reverse('reserve-catering'))
+        if date.date() <= datetime.datetime.now().date():
+            messages.error(request, 'Invalid Date. Date is already passed')
+            return redirect(reverse('calendar'))
 
         if form.is_valid():
             instance = form.save(commit=False)
@@ -719,17 +740,7 @@ class ReserveCatering(View):
         )
             return redirect(reverse('reserve-list'))
         messages.error(request, 'The date is unavailable. Date is already booked')
-        form = CateringForm()
-        if 'cart' in self.request.session:
-            cart = self.request.session['cart']
-        else:
-            cart = []    
-
-        context = {
-            'form': form,
-            'cart': len(cart),
-        }
-        return render(request, self.template_name, context)
+        return redirect(reverse('calendar'))
 
 
 class ReserveList(View):

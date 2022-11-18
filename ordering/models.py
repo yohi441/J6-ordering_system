@@ -25,7 +25,7 @@ class Profile(models.Model):
     last_name = models.CharField(max_length=255, blank=True, null=True)
     middle_initial = models.CharField(max_length=1, blank=True, null=True)
     address = models.TextField(max_length=2225, blank=True, null=True)
-    barangay = models.ForeignKey(Barangay, related_name="barangay", on_delete=models.CASCADE)
+    barangay = models.ForeignKey(Barangay, related_name="barangay", on_delete=models.CASCADE, blank=True, null=True)
     cellphone_number = models.IntegerField(blank=True, null=True)
     email_address = models.EmailField(blank=True, null=True)
 
